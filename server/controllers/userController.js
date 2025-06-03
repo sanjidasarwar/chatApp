@@ -1,9 +1,53 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import validator from "validator";
 import UserModel from "../models/User.js";
 
 const loginUser =async (req, res) =>{
+try {
+    const {name, password} = req.body
 
+    const user = await UserModel.findOne({
+        $or:[{email: name}, {name: name}]
+    })
+
+    if(!user){
+        res.status(500).json({
+            success:false,
+            message:"Login failed! Please enter a valid username"
+        })
+    }
+
+    const validPassword = await bcrypt.compare(password, user.password)
+    if(!validPassword){
+        res.status(500).json({
+            success:false,
+            message:"Login failed! Please enter a valid password"
+        })
+    }
+
+    const userObj = {
+        id:user._id,
+        name:user.name,
+        email:user.email
+    }
+
+    const token = jwt.sign(userObj, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRY,
+    })
+
+    res.status(200).json({
+        success:true,
+        message:"Login Sucessful",
+        token
+    })
+
+} catch (error) {
+      res.status(500).json({
+        success:false,
+        message:`Error=> ${error.message}`
+        })
+}
 }
 
 const registerUser = async (req, res)=>{
@@ -61,9 +105,27 @@ const registerUser = async (req, res)=>{
     }
 }
 
-const forgotPassword = async (req, res) =>{
+// const forgotPassword = async (req, res) =>{
+//     try {
+//         const {email} = req.body
+//         const user = UserModel.findOne({email: email})
 
-}
+//         if(!user){
+//             res.status(404).json({
+//                 success:false,
+//                 message:"Please enter a valid email"
+//             })
+//         }
+
+        
+
+//     } catch (error) {
+//            res.status(500).json({
+//         success:false,
+//         message:`Error=> ${error.message}`
+//         })
+//     }
+// }
 
 export {
     forgotPassword, loginUser,
