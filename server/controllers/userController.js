@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import validator from "validator";
 import UserModel from "../models/User.js";
+import sendEmail from "../utilites/email.js";
 
 const loginUser =async (req, res) =>{
 try {
@@ -120,18 +121,50 @@ const forgotPassword = async (req, res) =>{
         // generate random reset token
         const resetToken = user.createResetPasswordToken()
         await user.save()
+
+        // send the token back to the user email
+        const resetUrl = `${req.protocol}://${req.get('host')}/user/resetPassword/${resetToken}`
+
+
+        console.log(resetUrl);
+        
+
+        const message = `<p>You requested a password reset</p>
+             <p>Click this <a href="${resetUrl}">link</a> to reset your password</p>
+             <p>This reset password link will valid only for 10 minutes</p>`
+        
+        try {
+            await sendEmail({
+                email,
+                subject:"Password change request received",
+                message
+            })
+            res.status(200).json({ success: true, message: "Reset link sent to your email" });
+
+        } catch (error) {            
+            user.passwordResetToken=undefined
+            user.passwordResetTokenExpiry=undefined
+            user.save()
+            res.status(500).json({
+                message: "There was an error sending password reset email. Please try again later"
+            })
+        }
         
 
     } catch (error) {
            res.status(500).json({
-        success:false,
-        message:`Error=> ${error.message}`
-        })
+                success:false,
+                message:`Error=> ${error.message}`
+            })
     }
+}
+
+const resetPassword =(req, res) =>{
+
 }
 
 export {
     forgotPassword, loginUser,
-    registerUser
+    registerUser, resetPassword
 };
 
