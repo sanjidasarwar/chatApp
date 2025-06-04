@@ -105,27 +105,30 @@ const registerUser = async (req, res)=>{
     }
 }
 
-// const forgotPassword = async (req, res) =>{
-//     try {
-//         const {email} = req.body
-//         const user = UserModel.findOne({email: email})
+const forgotPassword = async (req, res) =>{
+    try {
+        const {email} = req.body
+        const user =await UserModel.findOne({email: email})
 
-//         if(!user){
-//             res.status(404).json({
-//                 success:false,
-//                 message:"Please enter a valid email"
-//             })
-//         }
+        if(!user){
+            res.status(404).json({
+                success:false,
+                message:"Please enter a valid email"
+            })
+        }
 
+        // generate random reset token
+        const resetToken = user.createResetPasswordToken()
+        await user.save()
         
 
-//     } catch (error) {
-//            res.status(500).json({
-//         success:false,
-//         message:`Error=> ${error.message}`
-//         })
-//     }
-// }
+    } catch (error) {
+           res.status(500).json({
+        success:false,
+        message:`Error=> ${error.message}`
+        })
+    }
+}
 
 export {
     forgotPassword, loginUser,
