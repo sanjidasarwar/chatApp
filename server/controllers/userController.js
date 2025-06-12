@@ -1,9 +1,11 @@
 import bcrypt from "bcrypt";
+import cloudinary from "cloudinary";
 import crypto from 'crypto';
 import jwt from "jsonwebtoken";
 import validator from "validator";
 import UserModel from "../models/User.js";
 import sendEmail from "../utilites/email.js";
+
 
 const loginUser =async (req, res) =>{
 try {
@@ -190,8 +192,36 @@ const resetPassword = async (req, res) =>{
     })
 }
 
+const updateUser = async(req, res) =>{
+    try {
+        const {name, bio, password, profileImage} = req.body
+        const userId = req.userId
+        let updatedUser
+
+        if(!profileImage){
+            updatedUser = await UserModel.findByIdAndUpdate(userId, {name, bio, password}, {new:true})
+        }else{
+            const upload = cloudinary.uploader.upload(profileImage)
+            updatedUser = await UserModel.findByIdAndUpdate(userId, {name, bio, password, profileImage:upload.secure_url }, {new:true})
+        }
+
+        res.json({
+            success:true,
+            user:updatedUser
+        })
+    } catch (error) {
+        console.log(error.message);
+         res.json({
+            success:false,
+            message:error.message
+         })
+        
+    }
+
+}
+
 export {
     forgotPassword, loginUser,
-    registerUser, resetPassword
+    registerUser, resetPassword, updateUser
 };
 

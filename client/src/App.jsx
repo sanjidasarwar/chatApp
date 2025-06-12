@@ -1,25 +1,12 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
-import "./App.css";
-import Login from "./pages/Login/Login";
-import Chat from "./pages/Chat/Chat";
-import ProfileUpdate from "./pages/ProfileUpdate/ProfileUpdate";
-import NotFound from "./pages/NotFound/NotFound";
+import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { useEffect } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./config/firebase";
+import "./App.css";
+import Chat from "./pages/Chat/Chat";
+import Login from "./pages/Login/Login";
+import NotFound from "./pages/NotFound/NotFound";
+import ProfileUpdate from "./pages/ProfileUpdate/ProfileUpdate";
 
 function App() {
-  const navigate = useNavigate();
-  useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // navigate("/chat");
-      } else {
-        // navigate("/");
-      }
-    });
-  }, []);
   return (
     <>
       <ToastContainer />
