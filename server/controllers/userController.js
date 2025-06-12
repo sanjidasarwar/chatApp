@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import crypto from 'crypto';
 import jwt from "jsonwebtoken";
 import validator from "validator";
 import UserModel from "../models/User.js";
@@ -123,11 +124,7 @@ const forgotPassword = async (req, res) =>{
         await user.save()
 
         // send the token back to the user email
-        const resetUrl = `${req.protocol}://${req.get('host')}/user/resetPassword/${resetToken}`
-
-
-        console.log(resetUrl);
-        
+        const resetUrl = `${req.protocol}://${req.get('host')}/user/resetPassword/${resetToken}`        
 
         const message = `<p>You requested a password reset</p>
              <p>Click this <a href="${resetUrl}">link</a> to reset your password</p>
@@ -159,8 +156,38 @@ const forgotPassword = async (req, res) =>{
     }
 }
 
-const resetPassword =(req, res) =>{
+const resetPassword = async (req, res) =>{
+    const token = crypto.createHash('sha256').update(req.params.token).digest('hex');
+    const user = await findOne({passwordResetToken:token, passwordResetTokenExpiry: {$gt:Date.now()}})
 
+    if(!user){
+           res.status(500).json({
+                success:false,
+                message:"Token is invalid or has expired"
+            })
+    }
+
+    user.password = req.body.password
+    user.passwordResetToken = undefined
+    user.passwordResetTokenExpiry = undefined
+    user.passwordChangedAt = Date.now()
+
+    user.save()
+
+    const userObj = {
+        id:user._id,
+        name:user.name,
+        email:user.email
+    }
+    const newToken = jwt.sign(userObj, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRY,
+    })
+
+    res.status(200).json({
+        success:true,
+        message:"Login Sucessful",
+        newToken
+    })
 }
 
 export {
