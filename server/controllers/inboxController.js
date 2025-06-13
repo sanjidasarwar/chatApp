@@ -1,4 +1,5 @@
 const Conversation = require("../models/Conversation.js")
+const Message = require("../models/Message.js")
 
 const addConversation =async (req, res) =>{
    try {
@@ -23,12 +24,12 @@ const addConversation =async (req, res) =>{
         creator:{
             id: loggedinUser,
             name: req.userName,
-            avator: req.userAvator || null,
+            avator: req.userAvatar || null,
         },
         participant:{
             id:selectedUser,
             name: req.body.userName,
-            avator: req.body.userAvator || null
+            avator: req.body.userAvatar || null
         }
     })
 
@@ -65,7 +66,51 @@ const getUsersForSidebar = async (res, req) =>{
     
 }
 
+const sendMessage = async (req, res) =>{
+   try {
+    const { message, receiverId, receiverName, avatar, conversationId } =
+    req.body;
+    
+    const loggedinUser = req.userId
+
+    let imageUrl;
+    if(avatar){
+        const upload = cloudinary.uploader.upload(avatar)
+        imageUrl=upload.secure_url
+    }
+
+    const newMessage = await new Message({
+        sender:{
+            id:loggedinUser,
+            name: req.userName,
+            avator: req.userAvatar || null,
+        },
+        receiver:{
+            id:receiverId,
+            name: receiverName,
+            avator: avatar || null,
+        },
+        text:message,
+        attachment: imageUrl,
+        conversation_id:conversationId
+
+    })
+
+    res.json({
+        success:true,
+        newMessage
+    })
+   } catch (error) {
+     res.json({
+        success:false,
+        message:error.message
+    })
+   }
+
+}
+
 module.exports={
 getUsersForSidebar,
-addConversation
+addConversation,
+sendMessage
 }
