@@ -67,5 +67,5 @@ const getUsersForSidebar = async (res, req) =>{
 
 module.exports={
 getUsersForSidebar,
-
+addConversation
 }

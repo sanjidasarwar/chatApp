@@ -33,7 +33,8 @@ try {
     const userObj = {
         id:user._id,
         name:user.name,
-        email:user.email
+        email:user.email,
+        avator:user.avator
     }
 
     const token = jwt.sign(userObj, process.env.JWT_SECRET, {
