@@ -109,8 +109,33 @@ const sendMessage = async (req, res) =>{
 
 }
 
+const getMessage = async (req, res) =>{
+   try {
+     const messages = await Message.find({
+        "conversation_id" : req.params.conversationId
+    })
+
+    const {participant} = await Conversation.findById(req.params.conversationId)
+    res.status(200).json({
+      success:true,
+      data: {
+        messages,
+        participant,
+      },
+      user: req.userId,
+      selectedConversationId: req.params.conversationId,
+    });
+   } catch (error) {
+    res.json({
+        success:false,
+        message: error.message
+    })
+   }
+}
+
 module.exports={
 getUsersForSidebar,
 addConversation,
-sendMessage
+sendMessage,
+getMessage
 }
