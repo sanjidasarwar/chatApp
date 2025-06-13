@@ -3,7 +3,7 @@ import "dotenv/config";
 import express from "express";
 import connectCloudinary from "./config/cloudinary.js";
 import connectDB from "./config/mongodb.js";
-import userRoute from "./routes/userRoute.js";
+import authRoute from "./routes/authRoute.js";
 
 
 
@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors())
 
 // api endpoint
-app.use('/user', userRoute)
+app.use('/api/auth', authRoute)
 
 app.get("/", (req, res) => {
   res.send("Api working");
