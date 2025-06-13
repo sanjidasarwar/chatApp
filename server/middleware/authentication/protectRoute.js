@@ -13,6 +13,8 @@ const protectRoute =(req, res, next)=>{
 
     const decoded_token= jwt.varify(token, process.env.JWT_SECRET)
     req.userId = decoded_token.id
+    req.userName = decoded_token.name
+    req.userAvator = decoded_token.avator
 
     next()
   } catch (error) {
