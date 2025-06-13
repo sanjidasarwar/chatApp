@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const userAuth =(req, res, next)=>{
+const protectRoute =(req, res, next)=>{
   const { token } = req.headers;
     
   try {
@@ -21,4 +21,4 @@ const userAuth =(req, res, next)=>{
   }
 }
 
-export default userAuth;
+export default protectRoute;

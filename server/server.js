@@ -20,6 +20,7 @@ app.use(cors())
 
 // api endpoint
 app.use('/api/auth', authRoute)
+app.use('/api/inbox', authRoute)
 
 app.get("/", (req, res) => {
   res.send("Api working");
