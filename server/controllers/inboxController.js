@@ -3,7 +3,7 @@ const Message = require("../models/Message.js")
 
 const addConversation =async (req, res) =>{
    try {
-     const loggedinUser = req.userId
+     const loggedinUser = req.user._id
     const selectedUser = req.body.id
 
     const existingConversation = await Conversation.find({
@@ -23,8 +23,8 @@ const addConversation =async (req, res) =>{
     const newConversation = new Conversation({
         creator:{
             id: loggedinUser,
-            name: req.userName,
-            avator: req.userAvatar || null,
+            name: req.user.name,
+            avator: req.user.avatar || null,
         },
         participant:{
             id:selectedUser,
@@ -49,7 +49,7 @@ const addConversation =async (req, res) =>{
 
 const getUsersForSidebar = async (res, req) =>{
     try {
-        const loggedinUser = req.userId
+        const loggedinUser = req.user._id
         const addedUser =await Conversation.find({
             $or:[{"creator.id": loggedinUser}, {"participant.id": loggedinUser}]
         })
@@ -71,7 +71,6 @@ const sendMessage = async (req, res) =>{
     const { message, receiverId, receiverName, avatar, conversationId } =
     req.body;
     
-    const loggedinUser = req.userId
 
     let imageUrl;
     if(avatar){
@@ -81,9 +80,9 @@ const sendMessage = async (req, res) =>{
 
     const newMessage = await new Message({
         sender:{
-            id:loggedinUser,
-            name: req.userName,
-            avator: req.userAvatar || null,
+            id:req.user._id,
+            name: req.user.name,
+            avator: req.user.avatar || null,
         },
         receiver:{
             id:receiverId,
@@ -122,7 +121,7 @@ const getMessage = async (req, res) =>{
         messages,
         participant,
       },
-      user: req.userId,
+      user: req.user,
       selectedConversationId: req.params.conversationId,
     });
    } catch (error) {
