@@ -37,7 +37,7 @@ try {
         avator:user.avator
     }
 
-    const token = jwt.sign(userObj, process.env.JWT_SECRET, {
+    const token = jwt.sign(user._id, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRY,
     })
 
@@ -177,12 +177,7 @@ const resetPassword = async (req, res) =>{
 
     user.save()
 
-    const userObj = {
-        id:user._id,
-        name:user.name,
-        email:user.email
-    }
-    const newToken = jwt.sign(userObj, process.env.JWT_SECRET, {
+    const newToken = jwt.sign(user._id, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRY,
     })
 
