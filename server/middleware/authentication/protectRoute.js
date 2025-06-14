@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
+import UserModel from "../../models/User";
 
-const protectRoute =(req, res, next)=>{
+const protectRoute =async (req, res, next)=>{
   const { token } = req.headers;
     
   try {
@@ -12,9 +13,10 @@ const protectRoute =(req, res, next)=>{
     }
 
     const decoded_token= jwt.varify(token, process.env.JWT_SECRET)
-    req.userId = decoded_token.id
-    req.userName = decoded_token.name
-    req.userAvatar = decoded_token.avatar
+
+    const user = await UserModel.findById(decoded_token.id).select("-password")
+
+    req.user = user
 
     next()
   } catch (error) {
