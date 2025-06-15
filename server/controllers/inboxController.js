@@ -1,5 +1,6 @@
-const Conversation = require("../models/Conversation.js")
-const Message = require("../models/Message.js")
+import Conversation from "../models/Conversation.js"
+import Message from "../models/Message.js"
+import { io, userSocketMap } from "../server.js"
 
 const addConversation =async (req, res) =>{
    try {
@@ -94,6 +95,11 @@ const sendMessage = async (req, res) =>{
         conversation_id:conversationId
 
     })
+
+    const receiverSocketId = userSocketMap[receiverId]
+    if(receiverSocketId){
+        io.to(receiverSocketId).emit('newMessage', newMessage)
+    }
 
     res.json({
         success:true,
