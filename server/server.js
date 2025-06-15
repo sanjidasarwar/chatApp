@@ -1,10 +1,11 @@
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
+import http from 'http';
+import { Server } from "socket.io";
 import connectCloudinary from "./config/cloudinary.js";
 import connectDB from "./config/mongodb.js";
 import authRoute from "./routes/authRoute.js";
-
 
 
 const app = express()
@@ -12,6 +13,34 @@ connectDB()
 connectCloudinary()
 
 const port =process.env.PORT || 8000
+const server = http.createServer(app)
+
+// initialize socket io server
+export const io = new Server(server, {
+  cors:{origin: "*"}
+})
+
+//store online users
+export const userSocketMap ={}
+
+// socket io connection handler
+io.on('connection', (socket)=>{
+  const userId = socket.handshake.query.userId
+  console.log("user connected:", userId);
+  if(userId){
+    userSocketMap[userId]= socket.id
+  }
+
+  io.emit("getOnlineUsers", Object.keys(userSocketMap))
+
+  socket.on('disconnect', ()=>{
+    console.log("user disconnected:", userId);
+    delete userSocketMap[userId]
+    io.emit("getOnlineUsers", Object.keys(userSocketMap))
+
+  })
+  
+})
 
 // middleware
 app.use(express.json());
