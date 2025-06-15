@@ -152,5 +152,6 @@ module.exports={
 getUsersForSidebar,
 addConversation,
 sendMessage,
-getMessage
+getMessage,
+markMessageAsSeen
 }
