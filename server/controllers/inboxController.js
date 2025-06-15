@@ -132,6 +132,22 @@ const getMessage = async (req, res) =>{
    }
 }
 
+const markMessageAsSeen = async(req, res) =>{
+    try {
+        const {id} = req.params
+        await Message.findByIdAndUpdate(id, {seen:true})
+        res.json({
+            success:true
+        })
+        
+    } catch (error) {
+        res.json({
+            success:false,
+            message: error.message
+         })
+    }
+}
+
 module.exports={
 getUsersForSidebar,
 addConversation,
