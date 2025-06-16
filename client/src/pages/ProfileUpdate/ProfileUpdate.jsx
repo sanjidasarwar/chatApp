@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import "./ProfileUpdate.css";
-import { avator_icon, profile_icon } from "../../assets";
-import { auth, db } from "../../config/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import upload from "../../lib/upload";
+import { avator_icon, profile_icon } from "../../assets";
+// import upload from "../../lib/upload";
+import "./ProfileUpdate.css";
 
 function ProfileUpdate() {
   const [image, setImage] = useState("");
@@ -22,7 +19,6 @@ function ProfileUpdate() {
       if (!previewImage && !image) {
         toast.error("Upload Profile Picture");
       }
-      const docRef = doc(db, "Users", uid);
       if (image) {
         const imgUrl = await upload(image);
         console.log(imgUrl);
@@ -32,24 +28,21 @@ function ProfileUpdate() {
     }
   };
 
-  useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setUid(user.uid);
-        const docRef = doc(db, "Users", user.uid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          setName(userData.name || "");
-          setBio(userData.bio || "");
-          setPreviewImage(userData.avator || "");
-        } else {
-          navigate("/");
-        }
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   onAuthStateChanged(auth, async (user) => {
+  //     if (user) {
+  //       setUid(user.uid);
+  //       if (docSnap.exists()) {
+  //         const userData = docSnap.data();
+  //         setName(userData.name || "");
+  //         setBio(userData.bio || "");
+  //         setPreviewImage(userData.avator || "");
+  //       } else {
+  //         navigate("/");
+  //       }
+  //     }
+  //   });
+  // }, []);
 
   return (
     <div className="profile">

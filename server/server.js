@@ -17,7 +17,10 @@ const server = http.createServer(app)
 
 // initialize socket io server
 export const io = new Server(server, {
-  cors:{origin: "*"}
+  cors:{
+  origin: 'http://localhost:5173',
+  credentials: true,
+}
 })
 
 //store online users
@@ -45,7 +48,10 @@ io.on('connection', (socket)=>{
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+}))
 
 // api endpoint
 app.use('/api/auth', authRoute)
@@ -55,7 +61,7 @@ app.get("/", (req, res) => {
   res.send("Api working");
 });
 
-app.listen(port, ()=>{
+server.listen(port, ()=>{
     console.log(`listening to port ${port}`);
     
 })

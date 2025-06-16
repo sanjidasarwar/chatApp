@@ -1,7 +1,5 @@
-import React from "react";
+import { logo, profile_img, search, three_dot } from "../../assets";
 import "./LeftSidebar.css";
-import { logo, search, profile_img, three_dot } from "../../assets";
-import { logout } from "../../config/firebase";
 
 function LeftSidebar() {
   return (
@@ -14,7 +12,7 @@ function LeftSidebar() {
             <div className="sub-menu">
               <p>Edit Profile</p>
               <hr />
-              <p onClick={() => logout()}>Logout</p>
+              <p>Logout</p>
             </div>
           </div>
         </div>

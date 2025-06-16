@@ -9,45 +9,43 @@ import sendEmail from "../utilites/email.js";
 
 const loginUser =async (req, res) =>{
 try {
-    const {name, password} = req.body
+    const {userName, password} = req.body
 
     const user = await UserModel.findOne({
-        $or:[{email: name}, {name: name}]
+        $or:[{email: userName}, {name: userName}]
     })
 
     if(!user){
-        res.status(500).json({
+        return res.status(500).json({
             success:false,
             message:"Login failed! Please enter a valid username"
         })
     }
 
     const validPassword = await bcrypt.compare(password, user.password)
+    
     if(!validPassword){
-        res.status(500).json({
+        return res.status(500).json({
             success:false,
             message:"Login failed! Please enter a valid password"
         })
     }
 
-    const userObj = {
-        id:user._id,
-        name:user.name,
-        email:user.email,
-        avator:user.avator
-    }
-
-    const token = jwt.sign(user._id, process.env.JWT_SECRET, {
+    const token = jwt.sign({id:user._id}, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRY,
     })
+    
 
     res.status(200).json({
         success:true,
         message:"Login Sucessful",
+        user,
         token
     })
 
 } catch (error) {
+    console.log(error);
+    
       res.status(500).json({
         success:false,
         message:`Error=> ${error.message}`
@@ -57,51 +55,53 @@ try {
 
 const registerUser = async (req, res)=>{
     try {
-        const {name, email, password} = req.body
-    const existUser = await UserModel.findOne({email: email})
-    if(existUser){
-        res.json({
-            success:false,
-            message: "User already exist"
+        const {name, userName, password} = req.body
+        
+        const existUser = await UserModel.findOne({email: userName})
+
+        if(existUser){
+            res.json({
+                success:false,
+                message: "User already exist"
+            })
+        }
+
+        if(!validator.isEmail(userName)){
+            res.json({
+                success:false,
+                message: "Please enter a valid email"
+            })
+        }
+
+        const strongPassword= validator.isStrongPassword(password, {
+            minLength: 8,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 1,
         })
-    }
 
-    if(!validator.isEmail(email)){
-        res.json({
-            success:false,
-            message: "Please enter a valid email"
+        if(!strongPassword){
+            res.json({
+                success:false,
+                message: "Please enter a strong password"
+            })
+        }
+
+        // hashing password
+        const hashedPassword = await bcrypt.hash(password, 10)
+
+        const newUser = new UserModel({
+            name,
+            email:userName,
+            password:hashedPassword
         })
-    }
 
-    const strongPassword= validator.isStrongPassword(password, {
-        minLength: 8,
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 1,
-        minSymbols: 1,
-    })
-
-    if(!strongPassword){
-        res.json({
-            success:false,
-            message: "Please enter a strong password"
-        })
-    }
-
-    // hashing password
-    const hashedPassword = await bcrypt.hash(password, 10)
-
-    const newUser = new UserModel({
-        name,
-        email,
-        password:hashedPassword
-    })
-
-    await newUser.save()
-        res.status(200).json({
-            success:true,
-            message:"User was added successfully!"
-        })
+        await newUser.save()
+            res.status(200).json({
+                success:true,
+                message:"User was added successfully!"
+            })
     } catch (error) {
         res.status(500).json({
         success:false,

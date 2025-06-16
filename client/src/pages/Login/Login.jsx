@@ -1,21 +1,53 @@
-import React, { useState } from "react";
-import "./Login.css";
+import { useContext, useState } from "react";
 import { logoBig } from "../../assets";
-import { login, signup } from "../../config/firebase";
+import { AuthContext } from "../../context/AuthContext";
+import "./Login.css";
 
 function Login() {
-  const [currentState, setCurrentState] = useState("Sign Up");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [currentState, setCurrentState] = useState("Login");
+  const [isDataSubmitted, setIsDataSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    userName: "",
+    password: "",
+  });
+
+  const { login } = useContext(AuthContext);
+
+  const handleCurrentState = (state) => {
+    setCurrentState(state);
+  };
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (currentState === "Sign Up") {
-      signup(username, email, password);
-    } else {
-      login(email, password);
+    if (currentState === "Sign up" && !isDataSubmitted) {
+      setIsDataSubmitted(true);
+      return;
     }
+
+    const payload =
+      currentState === "Sign Up"
+        ? {
+            name: formData.name,
+            userName: formData.userName,
+            password: formData.password,
+          }
+        : {
+            userName: formData.userName,
+            password: formData.password,
+          };
+
+    login(
+      currentState === "Sign Up" ? "register" : "login",
+      payload,
+      handleCurrentState
+    );
   };
 
   return (
@@ -23,35 +55,47 @@ function Login() {
       <img className="logo" src={logoBig} alt="" />
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>{currentState}</h2>
-        {currentState === "Sign Up" && (
+        {currentState === "Login" ? (
           <input
             className="form-input"
             type="text"
-            placeholder="username"
+            placeholder="Enter Name/Email"
             required=""
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
+            name="userName"
+            value={formData.userName}
+            onChange={(e) => handleChange(e)}
           />
-        )}
+        ) : (
+          <>
+            <input
+              className="form-input"
+              type="text"
+              placeholder="Enter Name"
+              required=""
+              name="name"
+              value={formData.name}
+              onChange={(e) => handleChange(e)}
+            />
 
-        <input
-          className="form-input"
-          type="email"
-          placeholder="Email address"
-          required=""
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
-        />
+            <input
+              className="form-input"
+              type="email"
+              placeholder="Email address"
+              required=""
+              name="userName"
+              value={formData.email}
+              onChange={(e) => handleChange(e)}
+            />
+          </>
+        )}
         <input
           className="form-input"
           type="password"
           placeholder="password"
           required=""
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
+          name="password"
+          value={formData.password}
+          onChange={(e) => handleChange(e)}
         />
         <button type="submit">
           {currentState === "Sign Up" ? "Create account" : "Login"}

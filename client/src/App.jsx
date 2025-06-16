@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
-import { AuthContext } from "./context/authContext";
+import { AuthContext } from "./context/AuthContext.jsx";
 import Chat from "./pages/Chat/Chat";
 import Login from "./pages/Login/Login";
 import NotFound from "./pages/NotFound/NotFound";
