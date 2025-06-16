@@ -28,22 +28,6 @@ function ProfileUpdate() {
     }
   };
 
-  // useEffect(() => {
-  //   onAuthStateChanged(auth, async (user) => {
-  //     if (user) {
-  //       setUid(user.uid);
-  //       if (docSnap.exists()) {
-  //         const userData = docSnap.data();
-  //         setName(userData.name || "");
-  //         setBio(userData.bio || "");
-  //         setPreviewImage(userData.avator || "");
-  //       } else {
-  //         navigate("/");
-  //       }
-  //     }
-  //   });
-  // }, []);
-
   return (
     <div className="profile">
       <div className="profile-container">

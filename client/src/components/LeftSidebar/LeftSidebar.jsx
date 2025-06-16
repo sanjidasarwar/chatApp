@@ -1,7 +1,11 @@
+import { useContext } from "react";
 import { logo, profile_img, search, three_dot } from "../../assets";
+import { AuthContext } from "../../context/AuthContext";
 import "./LeftSidebar.css";
 
 function LeftSidebar() {
+  const { logout } = useContext(AuthContext);
+
   return (
     <div className="ls hidden">
       <div className="ls-top">
@@ -12,7 +16,7 @@ function LeftSidebar() {
             <div className="sub-menu">
               <p>Edit Profile</p>
               <hr />
-              <p>Logout</p>
+              <p onClick={() => logout()}>Logout</p>
             </div>
           </div>
         </div>
