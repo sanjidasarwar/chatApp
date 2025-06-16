@@ -1,10 +1,12 @@
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { logo, profile_img, search, three_dot } from "../../assets";
 import { AuthContext } from "../../context/AuthContext";
 import "./LeftSidebar.css";
 
 function LeftSidebar() {
   const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   return (
     <div className="ls hidden">
@@ -14,7 +16,7 @@ function LeftSidebar() {
           <div className="menu">
             <img src={three_dot} alt="" />
             <div className="sub-menu">
-              <p>Edit Profile</p>
+              <p onClick={() => navigate("/profile-update")}>Edit Profile</p>
               <hr />
               <p onClick={() => logout()}>Logout</p>
             </div>
