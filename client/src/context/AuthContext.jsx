@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 import { axiosInstance } from "../lib/axios";
@@ -12,6 +13,7 @@ const AuthProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState(null);
   const [socket, setSocket] = useState(null);
+  const navigate = useNavigate();
 
   // check the user is authenticated or not. if so set the user data and connect the socket
   const checkAuth = async () => {
@@ -62,6 +64,7 @@ const AuthProvider = ({ children }) => {
         setToken(response.data.token);
         localStorage.setItem("token", response.data.token);
         toast.success(response.data.message);
+        navigate("/chat");
       } else {
         toast.error(response.message);
       }
@@ -116,6 +119,7 @@ const AuthProvider = ({ children }) => {
     login,
     logout,
     updateUser,
+    navigate,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
