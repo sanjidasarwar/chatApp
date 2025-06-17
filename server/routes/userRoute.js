@@ -1,5 +1,5 @@
 import express from 'express'
-import { addConversation, getMessage, getUsersForSidebar, markMessageAsSeen, sendMessage } from '../controllers/inboxController.js'
+import { addConversation, getMessage, getUsersForSidebar, markMessageAsSeen, sendMessage } from '../controllers/userController.js'
 import protectRoute from '../middleware/authentication/protectRoute.js'
 
 

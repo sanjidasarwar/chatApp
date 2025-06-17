@@ -6,6 +6,7 @@ import { Server } from "socket.io";
 import connectCloudinary from "./config/cloudinary.js";
 import connectDB from "./config/mongodb.js";
 import authRoute from "./routes/authRoute.js";
+import userRoute from "./routes/userRoute.js";
 
 
 const app = express()
@@ -55,7 +56,7 @@ app.use(cors({
 
 // api endpoint
 app.use('/api/auth', authRoute)
-app.use('/api/inbox', authRoute)
+app.use('/api/user', userRoute)
 
 app.get("/", (req, res) => {
   res.send("Api working");

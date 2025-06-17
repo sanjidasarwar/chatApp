@@ -154,10 +154,6 @@ const markMessageAsSeen = async(req, res) =>{
     }
 }
 
-module.exports={
-getUsersForSidebar,
-addConversation,
-sendMessage,
-getMessage,
-markMessageAsSeen
+export {
+    addConversation, getMessage, getUsersForSidebar, markMessageAsSeen, sendMessage
 }

@@ -12,7 +12,7 @@ const protectRoute =async (req, res, next)=>{
         });
     }
 
-    const decoded_token= jwt.varify(token, process.env.JWT_SECRET)
+    const decoded_token= jwt.verify(token, process.env.JWT_SECRET)
 
     const user = await UserModel.findById(decoded_token.id).select("-password")
 

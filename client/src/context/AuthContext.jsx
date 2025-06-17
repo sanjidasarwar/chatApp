@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 import { axiosInstance } from "../lib/axios";
@@ -81,6 +81,32 @@ const AuthProvider = ({ children }) => {
     socket.disconnect();
   };
 
+  const updateUser = async (credentials) => {
+    try {
+      const { data } = await axiosInstance.patch(
+        `/auth/updateUser`,
+        credentials,
+        {
+          headers: { token, "Content-Type": "multipart/form-data" },
+        }
+      );
+      console.log(data);
+
+      if (data.success) {
+        setAuthUser(data.user);
+        toast.success("Profile Updated Successfully");
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (!token && localStorage.getItem("token")) {
+      setToken(localStorage.getItem("token"));
+    }
+  }, []);
+
   const value = {
     backendUrl,
     authUser,
@@ -89,6 +115,7 @@ const AuthProvider = ({ children }) => {
     checkAuth,
     login,
     logout,
+    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

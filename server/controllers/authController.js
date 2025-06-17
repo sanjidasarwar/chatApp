@@ -1,11 +1,11 @@
 import bcrypt from "bcrypt";
 import cloudinary from "cloudinary";
 import crypto from 'crypto';
+import fs from "fs";
 import jwt from "jsonwebtoken";
 import validator from "validator";
 import UserModel from "../models/User.js";
 import sendEmail from "../utilites/email.js";
-
 
 const loginUser =async (req, res) =>{
 try {
@@ -60,17 +60,11 @@ const registerUser = async (req, res)=>{
         const existUser = await UserModel.findOne({email: userName})
 
         if(existUser){
-            res.json({
-                success:false,
-                message: "User already exist"
-            })
+             return res.json({ success:false, message: "User already exist" });
         }
 
         if(!validator.isEmail(userName)){
-            res.json({
-                success:false,
-                message: "Please enter a valid email"
-            })
+             return res.json({ success:false, message: "Please enter a valid email" });
         }
 
         const strongPassword= validator.isStrongPassword(password, {
@@ -82,10 +76,7 @@ const registerUser = async (req, res)=>{
         })
 
         if(!strongPassword){
-            res.json({
-                success:false,
-                message: "Please enter a strong password"
-            })
+            return res.json({ success:false, message: "Please enter a strong password" });
         }
 
         // hashing password
@@ -161,7 +152,7 @@ const forgotPassword = async (req, res) =>{
 
 const resetPassword = async (req, res) =>{
     const token = crypto.createHash('sha256').update(req.params.token).digest('hex');
-    const user = await findOne({passwordResetToken:token, passwordResetTokenExpiry: {$gt:Date.now()}})
+    const user = await UserModel.findOne({passwordResetToken:token, passwordResetTokenExpiry: {$gt:Date.now()}})
 
     if(!user){
            res.status(500).json({
@@ -170,7 +161,7 @@ const resetPassword = async (req, res) =>{
             })
     }
 
-    user.password = req.body.password
+    user.password = user.password = await bcrypt.hash(req.body.password, 10);
     user.passwordResetToken = undefined
     user.passwordResetTokenExpiry = undefined
     user.passwordChangedAt = Date.now()
@@ -190,16 +181,46 @@ const resetPassword = async (req, res) =>{
 
 const updateUser = async(req, res) =>{
     try {
-        const {name, bio, password, profileImage} = req.body
-        const userId = req.userId
-        let updatedUser
+        const {name, previousPassword, password} = req.body
+        const userId = req.user._id
+        console.log(userId);
+        
+        const user = await UserModel.findById(userId)
+        const matchPreviousPassword = await bcrypt.compare(previousPassword, user.password)
 
-        if(!profileImage){
-            updatedUser = await UserModel.findByIdAndUpdate(userId, {name, bio, password}, {new:true})
-        }else{
-            const upload = cloudinary.uploader.upload(profileImage)
-            updatedUser = await UserModel.findByIdAndUpdate(userId, {name, bio, password, profileImage:upload.secure_url }, {new:true})
+        let updatedFields ={name}
+
+        if (password && previousPassword) {
+            if(!matchPreviousPassword){
+                return res.status(400).json({
+                    success: false,
+                    message: "Previous password does not match",
+                });
+            }
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updatedFields.password = hashedPassword
         }
+
+        if(req.file){
+            const upload =await cloudinary.uploader.upload(req.file.path,  {
+                folder: "avatars",
+                public_id: `user_${userId}`,
+                overwrite: true,
+            })
+            
+            updatedFields.profileImage = upload.secure_url
+
+            //Delete the local file after uploading to Cloudinary
+            fs.unlink(req.file.path, (err) => {
+                if (err) console.error("Error deleting file:", err.message);
+            });
+        }
+
+        const updatedUser = await UserModel.findByIdAndUpdate(
+                                userId,
+                                updatedFields,
+                                { new: true }
+                            );
 
         res.json({
             success:true,
