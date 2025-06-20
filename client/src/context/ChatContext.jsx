@@ -21,9 +21,20 @@ const ChatProvider = ({ children }) => {
     }
   };
 
+  const addConversation = async (userId) => {
+    try {
+      const { data } = await axiosInstance.post("/user/add_new_user", {
+        id: userId,
+      });
+      console.log(data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   const value = {
     searchUsers,
     users,
+    addConversation,
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

@@ -5,18 +5,19 @@ import { io, userSocketMap } from "../server.js"
 
 const addConversation =async (req, res) =>{
    try {
-     const loggedinUser = req.user._id
-    const selectedUser = req.body.id
+    const loggedinUserId = req.user._id
+    const selectedUserId = req.body.id   
+    const selectedUser = await User.findById(selectedUserId);     
 
     const existingConversation = await Conversation.find({
         $or:[
-            {"creator.id": loggedinUser, "participant.id": selectedUser},
-            {"creator.id": selectedUser, "participant.id": loggedinUser}
+            {"creator.id": loggedinUserId, "participant.id": selectedUserId},
+            {"creator.id": selectedUserId, "participant.id": loggedinUserId}
         ]
-    })
+    })    
     
-    if(existingConversation){
-        res.status(200).json({
+    if(existingConversation.length > 0){
+        return res.status(200).json({
         message: "Conversation already exists.",
         conversationId: existingConversation._id,
       });
@@ -24,23 +25,24 @@ const addConversation =async (req, res) =>{
 
     const newConversation = new Conversation({
         creator:{
-            id: loggedinUser,
+            id: loggedinUserId,
             name: req.user.name,
             avator: req.user.avatar || null,
         },
         participant:{
-            id:selectedUser,
-            name: req.body.userName,
-            avator: req.body.userAvatar || null
+            id:selectedUser._id,
+            name: selectedUser.name,
+            avator: selectedUser.userAvatar || null
         }
     })
 
-    const conversation = await newConversation.save();
-    console.log(conversation);
+    const recentlyAddedConversation = await newConversation.save();
+    
     
     res.status(200).json({
       success:true,
       message: "Conversation was added successfully!",
+      conversationId:recentlyAddedConversation._id
     });
    } catch (error) {
      res.json({
@@ -168,7 +170,10 @@ const markMessageAsSeen = async(req, res) =>{
 const searchUsers = async(req, res) =>{
     try {
         const query = req.query.user
+        const loggedinUser = req.user._id
+
         const users =await User.find({
+            _id:{ $ne: loggedinUser},
             $or:[
                 {name: {$regex: query, $options:"i" }},
                 {email: {$regex: query, $options:"i" }},

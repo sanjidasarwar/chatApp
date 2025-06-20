@@ -3,7 +3,7 @@ import { ChatContext } from "../../context/ChatContext";
 
 function AddConverstionModal() {
   const [searchInput, setSearchInput] = useState("");
-  const { searchUsers, users } = useContext(ChatContext);
+  const { searchUsers, users, addConversation } = useContext(ChatContext);
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
@@ -49,7 +49,12 @@ function AddConverstionModal() {
             <div className="search_users mt-4">
               <ul>
                 {users.map((user) => (
-                  <li key={user.id}>
+                  <li
+                    key={user.id}
+                    onClick={() => {
+                      addConversation(user._id);
+                    }}
+                  >
                     <img src={user.profileImage} alt="user image" />
                     <span className="ms-2">{user.name}</span>
                   </li>
