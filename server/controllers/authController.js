@@ -14,6 +14,7 @@ try {
     const user = await UserModel.findOne({
         $or:[{email: userName}, {name: userName}]
     })
+    
 
     if(!user){
         return res.status(500).json({
@@ -39,7 +40,12 @@ try {
     res.status(200).json({
         success:true,
         message:"Login Sucessful",
-        user,
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            profileImage: user.profileImage || '',
+        },
         token
     })
 
@@ -241,7 +247,12 @@ const checkAuth = async(req, res)=>{
     try {
         res.status(200).json({
             success:true,
-            data: req.user
+            data:  {
+                id: req.user._id,
+                name: req.user.name,
+                email: req.user.email,
+                profileImage: req.user.profileImage || '',
+            }
         })
     } catch (error) {
         console.log(error.message);

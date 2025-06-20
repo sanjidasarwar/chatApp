@@ -1,5 +1,6 @@
 import Conversation from "../models/Conversation.js"
 import Message from "../models/Message.js"
+import User from "../models/User.js"
 import { io, userSocketMap } from "../server.js"
 
 const addConversation =async (req, res) =>{
@@ -34,7 +35,9 @@ const addConversation =async (req, res) =>{
         }
     })
 
-    await newConversation.save();
+    const conversation = await newConversation.save();
+    console.log(conversation);
+    
     res.status(200).json({
       success:true,
       message: "Conversation was added successfully!",
@@ -51,12 +54,20 @@ const addConversation =async (req, res) =>{
 const getUsersForSidebar = async (res, req) =>{
     try {
         const loggedinUser = req.user._id
-        const addedUser =await Conversation.find({
+        const linkededUser =await Conversation.find({
             $or:[{"creator.id": loggedinUser}, {"participant.id": loggedinUser}]
-        })
+        }).select("-password")
+
+        console.log(linkededUser);
+        
+
+        // const unseenMessage ={}
+        // const promises = linkededUser.map(async (user)=>{
+        //     const messages = await Message.find({})
+        // })
         res.json({
             success:true,
-            addedUser
+            linkededUser
         })
     } catch (error) {
          res.json({
@@ -154,6 +165,32 @@ const markMessageAsSeen = async(req, res) =>{
     }
 }
 
-export {
-    addConversation, getMessage, getUsersForSidebar, markMessageAsSeen, sendMessage
+const searchUsers = async(req, res) =>{
+    try {
+        const query = req.query.user
+        const users =await User.find({
+            $or:[
+                {name: {$regex: query, $options:"i" }},
+                {email: {$regex: query, $options:"i" }},
+                {phone: {$regex: query, $options:"i" }}
+            ]
+        }).limit(10)
+        
+        res.json({
+            success:true,
+            users
+        })
+    } catch (error) {
+        console.log(error.message);
+        
+         res.json({
+            success:false,
+            message: error.message
+        })
+    }
 }
+
+export {
+    addConversation, getMessage, getUsersForSidebar, markMessageAsSeen, searchUsers, sendMessage
+}
+

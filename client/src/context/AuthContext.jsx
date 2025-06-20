@@ -1,4 +1,3 @@
-import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -18,12 +17,12 @@ const AuthProvider = ({ children }) => {
   // check the user is authenticated or not. if so set the user data and connect the socket
   const checkAuth = async () => {
     try {
-      const response = await axiosInstance.get("/auth/checkAuth");
-      if (response.success) {
-        setAuthUser(response.data);
-        connectSocket(response.data);
+      const { data } = await axiosInstance.get("/auth/checkAuth");
+      if (data.success) {
+        setAuthUser(data.data);
+        connectSocket(data.user);
       } else {
-        toast.error(response.message);
+        toast.error(data.message);
       }
     } catch (error) {
       toast.error(error.message);
@@ -55,14 +54,13 @@ const AuthProvider = ({ children }) => {
       if (response.data.success) {
         if (state === "register") {
           toast.success(response.data.message);
-          handleCurrentState("login");
+          handleCurrentState("Login");
           return;
         }
         setAuthUser(response.data.user);
         connectSocket(response.data.user);
-        axios.defaults.headers.common["token"] = response.data.token;
-        setToken(response.data.token);
         localStorage.setItem("token", response.data.token);
+        setToken(response.data.token);
         toast.success(response.data.message);
         navigate("/chat");
       } else {
@@ -79,9 +77,13 @@ const AuthProvider = ({ children }) => {
     setToken(null);
     setAuthUser(null);
     setOnlineUsers([]);
-    axios.defaults.headers.common["token"] = null;
+    axiosInstance.defaults.headers.common["Authorization"] = null;
     toast.success("Logged out successfully");
-    socket.disconnect();
+    navigate("/");
+    if (socket) {
+      socket.disconnect();
+      setSocket(null); // Optional: Clear socket from state
+    }
   };
 
   const updateUser = async (credentials) => {
@@ -90,7 +92,9 @@ const AuthProvider = ({ children }) => {
         `/auth/updateUser`,
         credentials,
         {
-          headers: { token, "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
       console.log(data);
@@ -105,8 +109,11 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (!token && localStorage.getItem("token")) {
-      setToken(localStorage.getItem("token"));
+    const localToken = localStorage.getItem("token");
+
+    if (!token && localToken) {
+      setToken(localToken);
+      checkAuth();
     }
   }, []);
 

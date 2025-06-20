@@ -8,8 +8,8 @@ function Login() {
   const [isDataSubmitted, setIsDataSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    userName: "sanjida@gmail.com",
-    password: "Tup657622#",
+    userName: "",
+    password: "",
   });
 
   const { login } = useContext(AuthContext);
@@ -99,7 +99,8 @@ function Login() {
         />
         <button type="submit">
           {currentState === "Sign Up" ? "Create account" : "Login"}
-        </button>profile 
+        </button>
+        profile
         <div className="login-term">
           <input type="checkbox" />
           <p>Agree to the terms of use &amp; privacy policy.</p>
