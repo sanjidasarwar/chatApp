@@ -18,8 +18,9 @@ const AuthProvider = ({ children }) => {
   const checkAuth = async () => {
     try {
       const { data } = await axiosInstance.get("/auth/checkAuth");
+
       if (data.success) {
-        setAuthUser(data.data);
+        setAuthUser(data.user);
         connectSocket(data.user);
       } else {
         toast.error(data.message);
@@ -116,6 +117,12 @@ const AuthProvider = ({ children }) => {
       checkAuth();
     }
   }, []);
+
+  useEffect(() => {
+    if (token) {
+      checkAuth();
+    }
+  }, [token]);
 
   const value = {
     backendUrl,

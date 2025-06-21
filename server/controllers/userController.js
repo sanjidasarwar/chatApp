@@ -18,8 +18,7 @@ const addConversation =async (req, res) =>{
     
     if(existingConversation.length > 0){
         return res.status(200).json({
-        message: "Conversation already exists.",
-        conversationId: existingConversation._id,
+        message: "Conversation already exists."
       });
     }
 
@@ -53,15 +52,12 @@ const addConversation =async (req, res) =>{
 
 }
 
-const getUsersForSidebar = async (res, req) =>{
+const getUsersForSidebar = async (req, res) =>{
     try {
         const loggedinUser = req.user._id
-        const linkededUser =await Conversation.find({
+        const conversation =await Conversation.find({
             $or:[{"creator.id": loggedinUser}, {"participant.id": loggedinUser}]
-        }).select("-password")
-
-        console.log(linkededUser);
-        
+        }).select("-password")        
 
         // const unseenMessage ={}
         // const promises = linkededUser.map(async (user)=>{
@@ -69,7 +65,7 @@ const getUsersForSidebar = async (res, req) =>{
         // })
         res.json({
             success:true,
-            linkededUser
+            conversation
         })
     } catch (error) {
          res.json({

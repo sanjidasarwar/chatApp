@@ -1,13 +1,15 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { logo, profile_img, search, three_dot } from "../../assets";
+import { logo, search, three_dot } from "../../assets";
 import { AuthContext } from "../../context/AuthContext";
+import { ChatContext } from "../../context/ChatContext";
 import AddConverstionModal from "./AddConverstionModal";
 import "./LeftSidebar.css";
 
 function LeftSidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const { logout } = useContext(AuthContext);
+  const { connectedUsers } = useContext(ChatContext);
   const navigate = useNavigate();
 
   return (
@@ -36,17 +38,15 @@ function LeftSidebar() {
           </div>
         </div>
         <div className="ls-list">
-          {Array(12)
-            .fill("")
-            .map((item, index) => (
-              <div key={index} className="friends ">
-                <img src={profile_img} alt="" />
-                <div>
-                  <p>GreatStack</p>
-                  <span></span>
-                </div>
+          {connectedUsers.map((user) => (
+            <div key={user.id} className="friends">
+              <img src={user.profileImage} alt="" />
+              <div>
+                <p className="text-white">{user.name}</p>
+                <span></span>
               </div>
-            ))}
+            </div>
+          ))}
         </div>
       </div>
       {isOpen && <AddConverstionModal />}
