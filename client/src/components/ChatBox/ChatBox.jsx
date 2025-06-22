@@ -1,13 +1,20 @@
-import React from "react";
+import { useContext } from "react";
+import { arrow, help, img_attachment, profile_img } from "../../assets";
+import { ChatContext } from "../../context/ChatContext";
 import "./ChatBox.css";
-import { profile_img, img_attachment, arrow, help } from "../../assets";
 
 function ChatBox() {
+  const { selectedConversations } = useContext(ChatContext);
+  console.log(selectedConversations);
+
+  const { messages, participant, user, selectedConversationId } =
+    selectedConversations;
+
   return (
     <div className="chat-box ">
       <div className="chat-user">
-        <img src={profile_img} alt="" />
-        <p>GreatStack</p>
+        <img src={participant.avatar} alt="" />
+        <p>{participant.name} </p>
         <img className="arrow" src="" alt="" />
         <img className="help" src={help} alt="" />
       </div>
@@ -23,7 +30,7 @@ function ChatBox() {
           <p className="msg">Lorem ipsum dolor sit amet...</p>
           <div>
             <img src={profile_img} alt="" />
-            <p>2.30 PM</p>
+            <p>3.30 PM</p>
           </div>
         </div>
       </div>

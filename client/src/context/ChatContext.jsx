@@ -8,6 +8,7 @@ export const ChatContext = createContext();
 const ChatProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [connectedConversations, setConnectedConversations] = useState([]);
+  const [selectedConversations, setSelectedConversations] = useState([]);
 
   const { authUser } = useContext(AuthContext);
 
@@ -61,11 +62,22 @@ const ChatProvider = ({ children }) => {
       const { data } = await axiosInstance.get(
         `/user/messages/${conversationId}`
       );
-      console.log(data);
+      if (data.success) {
+        setSelectedConversations(data.selectedConversation);
+      }
     } catch (error) {
       console.log(error.message);
     }
   };
+
+  // const sendMessage = async ()=>{
+  //   try {
+  //     const {data} =axiosInstance.post("user/seen_messages",)
+  //   } catch (error) {
+  //     console.log(error.message);
+
+  //   }
+  // }
 
   useEffect(() => {
     if (authUser) {
@@ -80,6 +92,7 @@ const ChatProvider = ({ children }) => {
     connectedConversations,
     allConnectedUsers,
     getMessages,
+    selectedConversations,
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

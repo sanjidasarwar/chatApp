@@ -141,10 +141,12 @@ const getMessage = async (req, res) =>{
     const {participant} = await Conversation.findById(req.params.conversationId)
     res.status(200).json({
       success:true,
+      selectedConversation:{
       messages,
       participant,
       user: loggedinUser,
       selectedConversationId: req.params.conversationId,
+      }
     });
    } catch (error) {
     res.json({

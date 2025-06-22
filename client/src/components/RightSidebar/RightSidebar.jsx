@@ -1,6 +1,5 @@
-import React from "react";
-import "./RightSidebar.css";
 import { profile_img } from "../../assets";
+import "./RightSidebar.css";
 
 const RightSidebar = () => {
   return (
