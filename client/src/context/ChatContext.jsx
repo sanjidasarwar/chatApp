@@ -7,7 +7,7 @@ export const ChatContext = createContext();
 
 const ChatProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
-  const [connectedUsers, setConnectedUsers] = useState([]);
+  const [connectedConversations, setConnectedConversations] = useState([]);
 
   const { authUser } = useContext(AuthContext);
 
@@ -43,11 +43,25 @@ const ChatProvider = ({ children }) => {
         const users = data.conversation.map((conv) => {
           const isCreator = conv.creator.id === authUser?.id;
           const otherUser = isCreator ? conv.participant : conv.creator;
-          return otherUser;
+          return {
+            otherUser,
+            conversationId: conv._id,
+          };
         });
 
-        setConnectedUsers(users);
+        setConnectedConversations(users);
       }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const getMessages = async (conversationId) => {
+    try {
+      const { data } = await axiosInstance.get(
+        `/user/messages/${conversationId}`
+      );
+      console.log(data);
     } catch (error) {
       console.log(error.message);
     }
@@ -63,8 +77,9 @@ const ChatProvider = ({ children }) => {
     searchUsers,
     users,
     addConversation,
-    connectedUsers,
+    connectedConversations,
     allConnectedUsers,
+    getMessages,
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

@@ -9,7 +9,7 @@ import "./LeftSidebar.css";
 function LeftSidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const { logout } = useContext(AuthContext);
-  const { connectedUsers } = useContext(ChatContext);
+  const { connectedConversations, getMessages } = useContext(ChatContext);
   const navigate = useNavigate();
 
   return (
@@ -38,11 +38,15 @@ function LeftSidebar() {
           </div>
         </div>
         <div className="ls-list">
-          {connectedUsers.map((user) => (
-            <div key={user.id} className="friends">
-              <img src={user.profileImage} alt="" />
+          {connectedConversations.map(({ conversationId, otherUser }) => (
+            <div
+              key={conversationId}
+              className="friends"
+              onClick={() => getMessages(conversationId)}
+            >
+              <img src={otherUser.profileImage} alt="" />
               <div>
-                <p className="text-white">{user.name}</p>
+                <p className="text-white">{otherUser.name}</p>
                 <span></span>
               </div>
             </div>

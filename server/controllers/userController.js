@@ -57,12 +57,20 @@ const getUsersForSidebar = async (req, res) =>{
         const loggedinUser = req.user._id
         const conversation =await Conversation.find({
             $or:[{"creator.id": loggedinUser}, {"participant.id": loggedinUser}]
-        }).select("-password")        
+        }).select("-password")    
+        
 
-        // const unseenMessage ={}
-        // const promises = linkededUser.map(async (user)=>{
-        //     const messages = await Message.find({})
+        // const promises = await Promise.all(
+        //     conversation.map(async (conv)=>{
+        //     const unseenMessages = await Message.find({"receiver.id":loggedinUser, "conversation_id":conv._id,seen:false })
+        //     console.log(unseenMessages);
+
         // })
+        // )
+
+        // console.log(promises);
+        
+
         res.json({
             success:true,
             conversation
@@ -124,6 +132,7 @@ const sendMessage = async (req, res) =>{
 }
 
 const getMessage = async (req, res) =>{
+    const loggedinUser= req.user
    try {
      const messages = await Message.find({
         "conversation_id" : req.params.conversationId
@@ -132,11 +141,9 @@ const getMessage = async (req, res) =>{
     const {participant} = await Conversation.findById(req.params.conversationId)
     res.status(200).json({
       success:true,
-      data: {
-        messages,
-        participant,
-      },
-      user: req.user,
+      messages,
+      participant,
+      user: loggedinUser,
       selectedConversationId: req.params.conversationId,
     });
    } catch (error) {

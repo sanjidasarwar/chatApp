@@ -9,7 +9,7 @@ userRoute.post("/add_new_user",protectRoute, addConversation)
 userRoute.get("/get_users",protectRoute, getUsersForSidebar)
 userRoute.get("/messages/:conversationId",protectRoute, getMessage)
 userRoute.post("/messages/",protectRoute, sendMessage)
-userRoute.post("/messages/",protectRoute, markMessageAsSeen)
+userRoute.post("/seen_messages/",protectRoute, markMessageAsSeen)
 userRoute.get("/search_users",protectRoute, searchUsers)
 
 

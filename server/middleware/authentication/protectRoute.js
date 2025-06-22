@@ -4,7 +4,6 @@ import UserModel from "../../models/User.js";
 const protectRoute =async (req, res, next)=>{
   
   const authHeader = req.headers.authorization;
-  console.log(authHeader);
   
     
   try {

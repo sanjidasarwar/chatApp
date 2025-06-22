@@ -35,7 +35,7 @@ const AuthProvider = ({ children }) => {
     if (!userData || socket?.connected) return;
     const newSocket = io(backendUrl, {
       query: {
-        userId: userData._id,
+        userId: userData.id,
       },
     });
 
