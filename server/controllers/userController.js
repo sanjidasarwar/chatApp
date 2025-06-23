@@ -1,7 +1,6 @@
 import Conversation from "../models/Conversation.js"
 import Message from "../models/Message.js"
 import User from "../models/User.js"
-import { io, userSocketMap } from "../server.js"
 
 const addConversation =async (req, res) =>{
    try {
@@ -88,13 +87,15 @@ const sendMessage = async (req, res) =>{
    try {
     const { message, receiverId, receiverName, avatar, conversationId } =
     req.body;
+    // const images = req.files
+    // console.log(req.files);
     
 
-    let imageUrl;
-    if(avatar){
-        const upload = cloudinary.uploader.upload(avatar)
-        imageUrl=upload.secure_url
-    }
+    // let imageUrl=null;
+    // if(images){
+    //     const upload = cloudinary.uploader.upload(avatar)
+    //     imageUrl=upload.secure_url
+    // }
 
     const newMessage = await new Message({
         sender:{
@@ -108,15 +109,15 @@ const sendMessage = async (req, res) =>{
             avator: avatar || null,
         },
         text:message,
-        attachment: imageUrl,
+        // attachment: imageUrl,
         conversation_id:conversationId
 
     })
 
-    const receiverSocketId = userSocketMap[receiverId]
-    if(receiverSocketId){
-        io.to(receiverSocketId).emit('newMessage', newMessage)
-    }
+    // const receiverSocketId = userSocketMap[receiverId]
+    // if(receiverSocketId){
+    //     io.to(receiverSocketId).emit('newMessage', newMessage)
+    // }
 
     res.json({
         success:true,
@@ -138,13 +139,14 @@ const getMessage = async (req, res) =>{
         "conversation_id" : req.params.conversationId
     })
 
-    const {participant} = await Conversation.findById(req.params.conversationId)
+    const {participant, creator} = await Conversation.findById(req.params.conversationId)
+
     res.status(200).json({
       success:true,
       selectedConversation:{
       messages,
       participant,
-      user: loggedinUser,
+      creator,
       selectedConversationId: req.params.conversationId,
       }
     });
