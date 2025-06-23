@@ -87,6 +87,8 @@ const sendMessage = async (req, res) =>{
    try {
     const { message, receiverId, receiverName, avatar, conversationId } =
     req.body;
+    console.log(message);
+    
     // const images = req.files
     // console.log(req.files);
     
@@ -108,11 +110,13 @@ const sendMessage = async (req, res) =>{
             name: receiverName,
             avator: avatar || null,
         },
-        text:message,
+        text:message.text,
         // attachment: imageUrl,
         conversation_id:conversationId
 
     })
+
+    await newMessage.save()
 
     // const receiverSocketId = userSocketMap[receiverId]
     // if(receiverSocketId){
@@ -133,7 +137,6 @@ const sendMessage = async (req, res) =>{
 }
 
 const getMessage = async (req, res) =>{
-    const loggedinUser= req.user
    try {
      const messages = await Message.find({
         "conversation_id" : req.params.conversationId

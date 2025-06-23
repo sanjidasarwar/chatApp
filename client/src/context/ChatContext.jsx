@@ -11,7 +11,7 @@ const ChatProvider = ({ children }) => {
   const [selectedConversations, setSelectedConversations] = useState([]);
 
   const { authUser } = useContext(AuthContext);
-  // console.log(selectedConversations);
+  console.log(selectedConversations);
 
   const searchUsers = async (query) => {
     try {

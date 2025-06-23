@@ -22,6 +22,10 @@ function ChatBox() {
   const isCreator = authUser?.id == creator?.id ? true : false;
   const otherUser = isCreator ? participant : creator;
 
+  console.log(messages);
+  console.log(authUser);
+  console.log(otherUser);
+
   const handleTextChange = (e) => {
     setInput((prev) => ({
       ...prev,
@@ -44,7 +48,7 @@ function ChatBox() {
     e.preventDefault();
     const data = {
       message: input,
-      receiverId: participant.id,
+      receiverId: participant._id,
       receiverName: participant.name,
       avatar: participant.avatar,
       conversationId: selectedConversationId,
@@ -67,20 +71,23 @@ function ChatBox() {
         <img className="help" src="help" alt="" />
       </div>
       <div className="chat-msg">
-        <div className="s-msg">
-          <p className="msg">Lorem ipsum dolor sit amet...</p>
-          <div>
-            <img src={profile_img} alt="" />
-            <p>2.30 PM</p>
+        {messages.map((msg) => (
+          <div
+            key={msg._id}
+            className={authUser.id === msg.sender.id ? "s-msg" : "r-msg"}
+          >
+            <p className="msg">{msg.text}</p>
+            <div>
+              <img src={profile_img} alt="" />
+              <p>
+                {new Date(msg.createdAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="r-msg">
-          <p className="msg">Lorem ipsum dolor sit amet...</p>
-          <div>
-            <img src={profile_img} alt="" />
-            <p>3.30 PM</p>
-          </div>
-        </div>
+        ))}
       </div>
       <form onSubmit={handleSubmit}>
         <div className="chat-input">
