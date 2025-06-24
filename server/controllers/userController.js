@@ -101,7 +101,13 @@ const sendMessage = async (req, res) =>{
         console.log(result);
         
         uploadedUrls.push(result.secure_url);
+
+        //Delete the local file after uploading to Cloudinary
+        fs.unlink(req.file.path, (err) => {
+            if (err) console.error("Error deleting file:", err.message);
+        });
       }
+
     }
 
     console.log("imgUrl",uploadedUrls);
