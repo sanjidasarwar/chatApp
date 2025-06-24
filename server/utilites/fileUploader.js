@@ -1,3 +1,4 @@
+import createError from 'http-errors'
 import multer from "multer"
 import path from "path"
 
@@ -14,9 +15,9 @@ function fileUpload(
         destination: (req, file, cb) =>{
             cb(null, UPLOADS_FOLDER)
         },
-        fileName: (req, file, cb)=>{
-            const fileExt = path.extName(file.originalname)
-            const baseName = path.baseName(file.originalname, fileExt)
+        filename: (req, file, cb)=>{
+            const fileExt = path.extname(file.originalname)
+            const baseName = path.basename(file.originalname, fileExt)
             const fileName = `${baseName.toLowerCase().split(" ").join("-")}-${Date.now()}${fileExt}`
 
             cb(null, fileName)

@@ -22,10 +22,6 @@ function ChatBox() {
   const isCreator = authUser?.id == creator?.id ? true : false;
   const otherUser = isCreator ? participant : creator;
 
-  console.log(messages);
-  console.log(authUser);
-  console.log(otherUser);
-
   const handleTextChange = (e) => {
     setInput((prev) => ({
       ...prev,
@@ -33,34 +29,37 @@ function ChatBox() {
     }));
   };
 
-  // const handleImageUpload = (e) => {
-  //   const file = e.target.files[0];
-  //   if (!file) return;
-  //   const newImages = [...input.attachment];
+  const handleImageUpload = (e) => {
+    const files = e.target.files;
 
-  //   setInput((prev) => ({
-  //     ...prev,
-  //     attachment: newImages,
-  //   }));
-  // };
+    if (!files) return;
+
+    setInput((prev) => ({
+      ...prev,
+      attachment: [...prev.attachment, ...files],
+    }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const data = {
-      message: input,
-      receiverId: participant._id,
-      receiverName: participant.name,
-      avatar: participant.avatar,
-      conversationId: selectedConversationId,
-    };
-    sendMessage(data);
+
+    const formData = new FormData();
+    formData.append("text", input.text);
+    formData.append("receiverId", otherUser.id);
+    formData.append("receiverName", otherUser.name);
+    formData.append("avatar", otherUser.avatar);
+    formData.append("conversationId", selectedConversationId);
+
+    input.attachment.forEach((file) => {
+      formData.append("attachments", file);
+    });
+
+    sendMessage(formData);
     setInput({
       text: "",
       attachment: [],
     });
   };
-
-  // console.log(selectedConversations);
 
   return (
     <div className="chat-box ">
@@ -97,11 +96,18 @@ function ChatBox() {
             onChange={(e) => handleTextChange(e)}
             placeholder="Send a message"
           />
-          <input type="file" id="attachment" name="attachment" hidden />
-          <label htmlFor="attachment">
+          <input
+            type="file"
+            id="attachments"
+            name="attachments"
+            multiple
+            hidden
+            onChange={(e) => handleImageUpload(e)}
+          />
+          <label htmlFor="attachments">
             <img src={img_attachment} alt="" />
           </label>
-          <img src={arrow} alt="" />
+          <img src={arrow} alt="" onClick={(e) => handleSubmit(e)} />
         </div>
       </form>
     </div>

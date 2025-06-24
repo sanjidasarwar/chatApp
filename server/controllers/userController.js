@@ -1,6 +1,8 @@
-import Conversation from "../models/Conversation.js"
-import Message from "../models/Message.js"
-import User from "../models/User.js"
+import cloudinary from "cloudinary";
+import Conversation from "../models/Conversation.js";
+import Message from "../models/Message.js";
+import User from "../models/User.js";
+
 
 const addConversation =async (req, res) =>{
    try {
@@ -85,19 +87,24 @@ const getUsersForSidebar = async (req, res) =>{
 
 const sendMessage = async (req, res) =>{
    try {
-    const { message, receiverId, receiverName, avatar, conversationId } =
+    const { text, receiverId, receiverName, avatar, conversationId } =
     req.body;
-    console.log(message);
     
-    // const images = req.files
-    // console.log(req.files);
-    
+    const images = req.files   
 
-    // let imageUrl=null;
-    // if(images){
-    //     const upload = cloudinary.uploader.upload(avatar)
-    //     imageUrl=upload.secure_url
-    // }
+
+    const uploadedUrls = [];
+
+    if(images && images.length > 0){
+        for (const file of images) {
+        const result = await cloudinary.uploader.upload(file.path);
+        console.log(result);
+        
+        uploadedUrls.push(result.secure_url);
+      }
+    }
+
+    console.log("imgUrl",uploadedUrls);
 
     const newMessage = await new Message({
         sender:{
@@ -110,8 +117,8 @@ const sendMessage = async (req, res) =>{
             name: receiverName,
             avator: avatar || null,
         },
-        text:message.text,
-        // attachment: imageUrl,
+        text:text,
+        attachment: uploadedUrls,
         conversation_id:conversationId
 
     })
@@ -207,5 +214,5 @@ const searchUsers = async(req, res) =>{
 
 export {
     addConversation, getMessage, getUsersForSidebar, markMessageAsSeen, searchUsers, sendMessage
-}
+};
 

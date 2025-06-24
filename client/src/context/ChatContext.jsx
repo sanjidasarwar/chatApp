@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { axiosInstance } from "../lib/axios";
 import { AuthContext } from "./AuthContext";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const ChatContext = createContext();
 
 const ChatProvider = ({ children }) => {
@@ -74,7 +73,11 @@ const ChatProvider = ({ children }) => {
 
   const sendMessage = async (credentials) => {
     try {
-      const { data } = await axiosInstance.post("user/messages", credentials);
+      const { data } = await axiosInstance.post("user/messages", credentials, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       console.log(data);
     } catch (error) {
       console.log(error.message);
