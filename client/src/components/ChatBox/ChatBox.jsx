@@ -76,6 +76,13 @@ function ChatBox() {
             className={authUser.id === msg.sender.id ? "s-msg" : "r-msg"}
           >
             <p className="msg">{msg.text}</p>
+            {msg.attachment && msg.attachment.length > 0 && (
+              <div>
+                {msg.attachment.map((imgUrl, idx) => (
+                  <img key={idx} src={imgUrl} alt={`attachment-${idx}`} />
+                ))}
+              </div>
+            )}
             <div>
               <img src={profile_img} alt="" />
               <p>
