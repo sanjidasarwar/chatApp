@@ -8,9 +8,17 @@ const ChatProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [connectedConversations, setConnectedConversations] = useState([]);
   const [selectedConversations, setSelectedConversations] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [unseenMessages, setUnseenMessages] = useState([]);
 
-  const { authUser } = useContext(AuthContext);
-  console.log(selectedConversations);
+  // const messages = selectedConversations?.messages || [];
+  const participant = selectedConversations?.participant || null;
+  const creator = selectedConversations?.creator || null;
+  const selectedConversationId =
+    selectedConversations?.selectedConversationId || null;
+
+  const { authUser, socket } = useContext(AuthContext);
+  console.log(unseenMessages);
 
   const searchUsers = async (query) => {
     try {
@@ -51,6 +59,7 @@ const ChatProvider = ({ children }) => {
         });
 
         setConnectedConversations(users);
+        setUnseenMessages(data.unseenMessages);
       }
     } catch (error) {
       console.log(error.message);
@@ -65,6 +74,7 @@ const ChatProvider = ({ children }) => {
 
       if (data.success) {
         setSelectedConversations(data.selectedConversation);
+        setMessages(data.selectedConversation.messages);
       }
     } catch (error) {
       console.log(error.message);
@@ -84,11 +94,41 @@ const ChatProvider = ({ children }) => {
     }
   };
 
+  const subscribeToMessages = async () => {
+    if (!socket) return;
+
+    socket.on("newMessage", (newMessage) => {
+      if (participant && participant.id === newMessage.sender.id) {
+        newMessage.seen = true;
+        setMessages((preMsg) => [...preMsg, newMessage]);
+
+        axiosInstance.put(`user/seen_messages/${newMessage._id}`);
+      } else {
+        setUnseenMessages((preUnseenMessages) => ({
+          preUnseenMessages,
+          [newMessage.sender.id]: preUnseenMessages[newMessage.sender.id]
+            ? preUnseenMessages[newMessage.sender.id] + 1
+            : 1,
+        }));
+      }
+    });
+  };
+
+  const unsubscribeFromMessages = () => {
+    if (socket) socket.off("newMessage");
+  };
+
   useEffect(() => {
     if (authUser) {
       allConnectedUsers();
     }
   }, [authUser]);
+
+  useEffect(() => {
+    subscribeToMessages();
+
+    return () => unsubscribeFromMessages();
+  }, [participant, socket]);
 
   const value = {
     searchUsers,
@@ -99,6 +139,11 @@ const ChatProvider = ({ children }) => {
     getMessages,
     selectedConversations,
     sendMessage,
+    messages,
+    participant,
+    creator,
+    selectedConversationId,
+    unseenMessages,
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

@@ -2,7 +2,7 @@ import cloudinary from "cloudinary";
 import Conversation from "../models/Conversation.js";
 import Message from "../models/Message.js";
 import User from "../models/User.js";
-
+import { io, userSocketMap } from "../server.js";
 
 const addConversation =async (req, res) =>{
    try {
@@ -58,23 +58,29 @@ const getUsersForSidebar = async (req, res) =>{
         const loggedinUser = req.user._id
         const conversation =await Conversation.find({
             $or:[{"creator.id": loggedinUser}, {"participant.id": loggedinUser}]
-        }).select("-password")    
+        }).select("-password")             
         
+        const unseenMessages ={}
+        const promises = conversation.map(async (conv)=>{
 
-        // const promises = await Promise.all(
-        //     conversation.map(async (conv)=>{
-        //     const unseenMessages = await Message.find({"receiver.id":loggedinUser, "conversation_id":conv._id,seen:false })
-        //     console.log(unseenMessages);
+            const messages = await Message.find({"receiver.id":loggedinUser, "conversation_id":conv._id,seen:false })           
+            
+              const otherUser = conv.creator.id.toString() === loggedinUser.toString() ? conv.participant : conv.creator;
+                    
+                    if (otherUser && messages.length > 0) {
+                        unseenMessages[otherUser.id] = (unseenMessages[otherUser.id] || 0) + messages.length;
+                    }
+            
+        })        
 
-        // })
-        // )
-
-        // console.log(promises);
         
+        
+        await Promise.all(promises)
 
         res.json({
             success:true,
-            conversation
+            conversation,
+            unseenMessages
         })
     } catch (error) {
          res.json({
@@ -110,8 +116,6 @@ const sendMessage = async (req, res) =>{
 
     }
 
-    console.log("imgUrl",uploadedUrls);
-
     const newMessage = await new Message({
         sender:{
             id:req.user._id,
@@ -131,10 +135,11 @@ const sendMessage = async (req, res) =>{
 
     await newMessage.save()
 
-    // const receiverSocketId = userSocketMap[receiverId]
-    // if(receiverSocketId){
-    //     io.to(receiverSocketId).emit('newMessage', newMessage)
-    // }
+    // emit new message to reciver's socket
+    const receiverSocketId = userSocketMap[receiverId]
+    if(receiverSocketId){
+        io.to(receiverSocketId).emit('newMessage', newMessage)
+    }
 
     res.json({
         success:true,
@@ -176,8 +181,8 @@ const getMessage = async (req, res) =>{
 
 const markMessageAsSeen = async(req, res) =>{
     try {
-        const {id} = req.params
-        await Message.findByIdAndUpdate(id, {seen:true})
+        const {messageId} = req.params
+        await Message.findByIdAndUpdate(messageId, {seen:true})
         res.json({
             success:true
         })

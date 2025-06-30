@@ -10,14 +10,14 @@ function ChatBox() {
     attachment: [],
   });
 
-  const { selectedConversations, sendMessage } = useContext(ChatContext);
+  const {
+    messages,
+    participant,
+    creator,
+    selectedConversationId,
+    sendMessage,
+  } = useContext(ChatContext);
   const { authUser } = useContext(AuthContext);
-
-  const messages = selectedConversations?.messages || [];
-  const participant = selectedConversations?.participant || null;
-  const creator = selectedConversations?.creator || null;
-  const selectedConversationId =
-    selectedConversations?.selectedConversationId || null;
 
   const isCreator = authUser?.id == creator?.id ? true : false;
   const otherUser = isCreator ? participant : creator;
@@ -100,6 +100,7 @@ function ChatBox() {
           <input
             type="text"
             name="text"
+            value={input.text}
             onChange={(e) => handleTextChange(e)}
             placeholder="Send a message"
           />

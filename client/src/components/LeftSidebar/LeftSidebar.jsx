@@ -9,8 +9,10 @@ import "./LeftSidebar.css";
 function LeftSidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const { logout } = useContext(AuthContext);
-  const { connectedConversations, getMessages } = useContext(ChatContext);
+  const { connectedConversations, getMessages, unseenMessages } =
+    useContext(ChatContext);
   const navigate = useNavigate();
+  console.log(connectedConversations);
 
   return (
     <>
@@ -47,7 +49,7 @@ function LeftSidebar() {
               <img src={otherUser.profileImage} alt="" />
               <div>
                 <p className="text-white">{otherUser.name}</p>
-                <span></span>
+                <span>{unseenMessages[otherUser.id]}</span>
               </div>
             </div>
           ))}
