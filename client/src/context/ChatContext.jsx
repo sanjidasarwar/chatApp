@@ -18,7 +18,7 @@ const ChatProvider = ({ children }) => {
     selectedConversations?.selectedConversationId || null;
 
   const { authUser, socket } = useContext(AuthContext);
-  console.log(connectedConversations);
+  console.log(unseenMessages);
 
   const searchUsers = async (query) => {
     try {
@@ -144,6 +144,7 @@ const ChatProvider = ({ children }) => {
     creator,
     selectedConversationId,
     unseenMessages,
+    setUnseenMessages,
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

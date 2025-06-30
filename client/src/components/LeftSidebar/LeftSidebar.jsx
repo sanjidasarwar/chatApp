@@ -9,9 +9,22 @@ import "./LeftSidebar.css";
 function LeftSidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const { logout, onlineUsers } = useContext(AuthContext);
-  const { connectedConversations, getMessages, unseenMessages } =
-    useContext(ChatContext);
+  const {
+    connectedConversations,
+    getMessages,
+    unseenMessages,
+    setUnseenMessages,
+  } = useContext(ChatContext);
   const navigate = useNavigate();
+
+  const handleConversation = (conversationId, otherUserId) => {
+    getMessages(conversationId);
+    setUnseenMessages((prev) => {
+      const updatedUnseenMessage = { ...prev };
+      delete updatedUnseenMessage[otherUserId];
+      return updatedUnseenMessage;
+    });
+  };
 
   return (
     <>
@@ -43,7 +56,7 @@ function LeftSidebar() {
             <div
               key={conversationId}
               className="friends"
-              onClick={() => getMessages(conversationId)}
+              onClick={() => handleConversation(conversationId, otherUser.id)}
             >
               <img src={otherUser.profileImage} alt="" />
               <div>
