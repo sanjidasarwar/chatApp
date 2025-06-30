@@ -18,7 +18,7 @@ const ChatProvider = ({ children }) => {
     selectedConversations?.selectedConversationId || null;
 
   const { authUser, socket } = useContext(AuthContext);
-  console.log(unseenMessages);
+  console.log(connectedConversations);
 
   const searchUsers = async (query) => {
     try {
