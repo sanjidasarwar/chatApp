@@ -11,7 +11,7 @@ userRoute.post("/add_new_user",protectRoute, addConversation)
 userRoute.get("/get_users",protectRoute, getUsersForSidebar)
 userRoute.get("/messages/:conversationId",protectRoute, getMessage)
 userRoute.post("/messages",protectRoute,attachmentUpload, sendMessage)
-userRoute.put("/seen_messages/:messageId",protectRoute, markMessageAsSeen)
+userRoute.put("/seen_messages/:conversationId",protectRoute, markMessageAsSeen)
 userRoute.get("/search_users",protectRoute, searchUsers)
 
 

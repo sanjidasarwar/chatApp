@@ -1,13 +1,16 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { logo, search, three_dot } from "../../assets";
+import { avator_icon, logo, search, three_dot } from "../../assets";
 import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
+import { axiosInstance } from "../../lib/axios";
 import AddConverstionModal from "./AddConverstionModal";
+
 import "./LeftSidebar.css";
 
 function LeftSidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState("");
   const { logout, onlineUsers } = useContext(AuthContext);
   const {
     connectedConversations,
@@ -17,13 +20,16 @@ function LeftSidebar() {
   } = useContext(ChatContext);
   const navigate = useNavigate();
 
-  const handleConversation = (conversationId, otherUserId) => {
+  const handleConversation = async (conversationId, otherUserId) => {
+    setSelectedUser(conversationId);
     getMessages(conversationId);
     setUnseenMessages((prev) => {
       const updatedUnseenMessage = { ...prev };
       delete updatedUnseenMessage[otherUserId];
       return updatedUnseenMessage;
     });
+
+    await axiosInstance.put(`/user/seen_messages/${conversationId}`);
   };
 
   return (
@@ -55,19 +61,32 @@ function LeftSidebar() {
           {connectedConversations.map(({ conversationId, otherUser }) => (
             <div
               key={conversationId}
-              className="friends"
+              className={`friends ${
+                selectedUser === conversationId ? "active" : ""
+              }`}
               onClick={() => handleConversation(conversationId, otherUser.id)}
             >
-              <img src={otherUser.profileImage} alt="" />
               <div>
+                <div className="avatar">
+                  <img
+                    src={
+                      otherUser.profileImage
+                        ? otherUser.profileImage
+                        : avator_icon
+                    }
+                    alt=""
+                  />
+                  <span
+                    className={`status ${
+                      onlineUsers.includes(otherUser.id) ? "online" : "offline"
+                    }`}
+                  />
+                </div>
                 <p className="text-white">{otherUser.name}</p>
-                {onlineUsers.includes(otherUser.id) ? (
-                  <span className="text-green-400 text-xs">Online</span>
-                ) : (
-                  <span className="text-neutral text-xs">Offline</span>
-                )}
-                <span>{unseenMessages[otherUser.id]}</span>
               </div>
+              {unseenMessages[otherUser.id] && (
+                <p className="unseen-count">{unseenMessages[otherUser.id]}</p>
+              )}
             </div>
           ))}
         </div>

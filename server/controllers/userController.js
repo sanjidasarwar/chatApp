@@ -181,8 +181,8 @@ const getMessage = async (req, res) =>{
 
 const markMessageAsSeen = async(req, res) =>{
     try {
-        const {messageId} = req.params
-        await Message.findByIdAndUpdate(messageId, {seen:true})
+        const {conversationId} = req.params
+        await Message.updateMany({"conversation_id":conversationId},  { $set: { seen: true } })
         res.json({
             success:true
         })

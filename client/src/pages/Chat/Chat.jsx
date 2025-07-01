@@ -1,6 +1,5 @@
 import ChatBox from "../../components/ChatBox/ChatBox";
 import LeftSidebar from "../../components/LeftSidebar/LeftSidebar";
-import RightSidebar from "../../components/RightSidebar/RightSidebar";
 import "./Chat.css";
 
 function Chat() {
@@ -9,7 +8,7 @@ function Chat() {
       <div className="chat-container">
         <LeftSidebar />
         <ChatBox />
-        <RightSidebar />
+        {/* <RightSidebar /> */}
       </div>
     </div>
   );
