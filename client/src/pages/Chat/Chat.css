@@ -1,6 +1,5 @@
 .chat {
     min-height: 100vh;
-    background: linear-gradient(#596aff, #383699);
     display: grid;
     place-items: center;
 }
@@ -8,9 +7,9 @@
     width: 95%;
     height: 75vh;
     max-width: 1000px;
-    background-color: #f0f8ff;
+    background-color: rgba(0,0,0, .4);
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 2fr;
     position: relative;
     overflow: hidden;
 }

@@ -1,9 +1,9 @@
 .ls {
-    background: #001030;
+    background: transparent;
     color: #fff;
     height: 75vh;
 }
-.ls-top {
+.ls-top, .ls-bottom {
     padding: 20px;
 }
 .ls-nav {
@@ -17,21 +17,24 @@
 .ls-nav .menu {
     position: relative;
     padding: 10px 0;
+    width: 130px;
 }
 .ls-nav .menu img {
     max-height: 20px;
     opacity: .6;
     cursor: pointer;
+    margin-left: auto;
+    display: block;
 }
 .menu .sub-menu {
     position: absolute;
     top: 100%;
-    right: 0;
+    right: 0px;
     width: 130px;
     padding: 20px;
     border-radius: 5px;
-    background-color: #fff;
-    color: #000;
+    background-color: #077eff;
+    color: #fff;
     display: none;
 }
 .menu:hover .sub-menu {
@@ -41,6 +44,11 @@
     cursor: pointer;
     font-size: 14px;
 }
+.sub-menu p:hover {
+    color: #06294f;
+    font-weight: bold;
+}
+
 .sub-menu hr {
     border: none;
     height: 1px;
@@ -48,9 +56,8 @@
     margin: 8px 0;
 }
 .ls-search {
-    background-color: #002670;
-    display: flex
-;
+    background-color: #077eff;
+    display: flex;
     align-items: center;
     gap: 10px;
     padding: 10px 12px;

@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { ChatContext } from "../../context/ChatContext";
+import "./Modal.css";
 
 function AddConverstionModal() {
   const [searchInput, setSearchInput] = useState("");
@@ -19,21 +20,19 @@ function AddConverstionModal() {
 
   return (
     <>
-      {/* Modal Backdrop & Centered Container */}
-      <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-        {/* Modal Box */}
-        <div className="bg-white w-full max-w-md rounded-lg shadow-lg">
-          {/* Header */}
-          <div className="flex justify-between items-center px-4 py-3 border-b">
-            <h5 className="text-lg font-semibold">New Conversation</h5>
-            <button // your logic to close modal
-              className="text-gray-500 hover:text-red-500 text-xl font-bold"
+      <div className="modal-overlay">
+        <div className="modal-box">
+          <div className="modal-header">
+            <h5 className="modal-title">New Conversation</h5>
+            <button
+              className="modal-close"
               aria-label="Close"
+              // your logic to close modal
             >
               &times;
             </button>
           </div>
-          <div className="p-4">
+          <div className="modal-body">
             <form id="add-conversation-form">
               <input
                 type="text"
@@ -41,12 +40,11 @@ function AddConverstionModal() {
                 name="user"
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Search user by name or email or mobile"
-                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="modal-input"
               />
             </form>
-            <p className="text-red-500 text-sm mt-2 error"></p>
-
-            <div className="search_users mt-4">
+            <p className="error-message"></p>
+            <div className="search-users">
               <ul>
                 {users.map((user) => (
                   <li
@@ -56,7 +54,7 @@ function AddConverstionModal() {
                     }}
                   >
                     <img src={user.profileImage} alt="user image" />
-                    <span className="ms-2">{user.name}</span>
+                    <span>{user.name}</span>
                   </li>
                 ))}
               </ul>

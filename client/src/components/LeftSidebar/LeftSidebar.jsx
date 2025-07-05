@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { avator_icon, logo, search, three_dot } from "../../assets";
+import { avator_icon, logo, three_dot } from "../../assets";
 import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
 import { axiosInstance } from "../../lib/axios";
@@ -41,21 +41,23 @@ function LeftSidebar() {
             <div className="menu">
               <img src={three_dot} alt="" />
               <div className="sub-menu">
+                <p onClick={() => setIsOpen(true)}>Add New</p>
+                <hr />
                 <p onClick={() => navigate("/profile-update")}>Edit Profile</p>
                 <hr />
                 <p onClick={() => logout()}>Logout</p>
               </div>
             </div>
           </div>
-          <div className="ls-search">
+          {/* <div className="ls-search">
             <img src={search} alt="" />
             <input type="text" placeholder="Search.." />
-          </div>
-          <div>
+          </div> */}
+          {/* <div>
             <button onClick={() => setIsOpen(true)}>
               Add New Conversation
             </button>
-          </div>
+          </div> */}
         </div>
         <div className="ls-list">
           {connectedConversations.map(({ conversationId, otherUser }) => (
@@ -90,6 +92,13 @@ function LeftSidebar() {
             </div>
           ))}
         </div>
+        {/* <div className="ls-bottom">
+          <div>
+            <button onClick={() => setIsOpen(true)}>
+              Add New Conversation
+            </button>
+          </div>
+        </div> */}
       </div>
       {isOpen && <AddConverstionModal />}
     </>

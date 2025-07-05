@@ -1,4 +1,4 @@
-.profile {
+.profile, .chat {
     min-height: 100vh;
     background: url(/chat_bg.jpg) no-repeat;
     background-size: cover;
@@ -8,7 +8,7 @@
     z-index: 3;
     position: relative;
 }
-.profile::after{
+.profile::after, .chat::after{
     content: '';
     width: 100%;
     height: 100%;
