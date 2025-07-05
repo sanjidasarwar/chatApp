@@ -132,6 +132,7 @@ const ChatProvider = ({ children }) => {
   const value = {
     searchUsers,
     users,
+    setUsers,
     addConversation,
     connectedConversations,
     allConnectedUsers,

@@ -1,17 +1,34 @@
 import { useContext, useEffect, useState } from "react";
+import { avator_icon } from "../../assets";
 import { ChatContext } from "../../context/ChatContext";
 import "./Modal.css";
 
-function AddConverstionModal() {
+function AddConverstionModal({ setIsOpen }) {
   const [searchInput, setSearchInput] = useState("");
-  const { searchUsers, users, addConversation } = useContext(ChatContext);
+  const [loading, setLoading] = useState(false);
+  const [noResult, setNoResult] = useState(false);
+
+  const { searchUsers, users, setUsers, addConversation } =
+    useContext(ChatContext);
+
+  const handleClose = () => {
+    setSearchInput("");
+    setUsers([]);
+    setIsOpen(false);
+  };
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       if (searchInput.trim()) {
-        searchUsers(searchInput);
+        setLoading(true);
+        searchUsers(searchInput).then((result) => {
+          setLoading(false);
+          result?.length === 0 ? setNoResult(true) : setNoResult(false);
+        });
       } else {
-        console.log("no user found");
+        setLoading(false);
+        setNoResult(false);
+        if (setUsers) setUsers([]);
       }
     }, 500);
 
@@ -27,7 +44,7 @@ function AddConverstionModal() {
             <button
               className="modal-close"
               aria-label="Close"
-              // your logic to close modal
+              onClick={handleClose}
             >
               &times;
             </button>
@@ -48,16 +65,23 @@ function AddConverstionModal() {
               <ul>
                 {users.map((user) => (
                   <li
-                    key={user.id}
+                    key={user._id}
                     onClick={() => {
                       addConversation(user._id);
                     }}
                   >
-                    <img src={user.profileImage} alt="user image" />
+                    <img
+                      src={user.profileImage ? user.profileImage : avator_icon}
+                      alt="user image"
+                    />
                     <span>{user.name}</span>
                   </li>
                 ))}
               </ul>
+              {loading && <p className="info-message">Loading...</p>}
+              {!loading && noResult && (
+                <p className="info-message">No users found.</p>
+              )}
             </div>
           </div>
         </div>

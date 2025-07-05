@@ -100,7 +100,7 @@ function LeftSidebar() {
           </div>
         </div> */}
       </div>
-      {isOpen && <AddConverstionModal />}
+      {isOpen && <AddConverstionModal setIsOpen={setIsOpen} />}
     </>
   );
 }
