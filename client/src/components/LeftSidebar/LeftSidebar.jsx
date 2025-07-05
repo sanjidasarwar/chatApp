@@ -53,11 +53,6 @@ function LeftSidebar() {
             <img src={search} alt="" />
             <input type="text" placeholder="Search.." />
           </div> */}
-          {/* <div>
-            <button onClick={() => setIsOpen(true)}>
-              Add New Conversation
-            </button>
-          </div> */}
         </div>
         <div className="ls-list">
           {connectedConversations.map(({ conversationId, otherUser }) => (
@@ -68,7 +63,7 @@ function LeftSidebar() {
               }`}
               onClick={() => handleConversation(conversationId, otherUser.id)}
             >
-              <div>
+              <div className="flex">
                 <div className="avatar">
                   <img
                     src={
@@ -92,13 +87,6 @@ function LeftSidebar() {
             </div>
           ))}
         </div>
-        {/* <div className="ls-bottom">
-          <div>
-            <button onClick={() => setIsOpen(true)}>
-              Add New Conversation
-            </button>
-          </div>
-        </div> */}
       </div>
       {isOpen && <AddConverstionModal setIsOpen={setIsOpen} />}
     </>

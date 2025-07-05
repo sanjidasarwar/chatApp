@@ -96,7 +96,10 @@
 }
 .friends div {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+}
+.friends p {
+    margin-left: 10px;
 }
 .friends span {
     color: #9f9f9f;
