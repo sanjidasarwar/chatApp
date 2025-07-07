@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { arrow, img_attachment, profile_img } from "../../assets";
+import { arrow, avator_icon, img_attachment, profile_img } from "../../assets";
 import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
 import "./ChatBox.css";
@@ -64,7 +64,7 @@ function ChatBox() {
   return (
     <div className="chat-box ">
       <div className="chat-user">
-        <img src={otherUser?.avatar} alt="" />
+        <img src={otherUser?.avatar ? otherUser.avatar : avator_icon} alt="" />
         <p>{otherUser?.name} </p>
         <img className="arrow" src="" alt="" />
         <img className="help" src="help" alt="" />
@@ -75,16 +75,18 @@ function ChatBox() {
             key={msg._id}
             className={authUser.id === msg.sender.id ? "s-msg" : "r-msg"}
           >
-            <p className="msg">{msg.text}</p>
-            {msg.attachment && msg.attachment.length > 0 && (
-              <div>
-                {msg.attachment.map((imgUrl, idx) => (
-                  <img key={idx} src={imgUrl} alt={`attachment-${idx}`} />
-                ))}
-              </div>
-            )}
             <div>
-              <img src={profile_img} alt="" />
+              <p className="msg">{msg.text}</p>
+              {msg.attachment && msg.attachment.length > 0 && (
+                <div className="attached-img">
+                  {msg.attachment.map((imgUrl, idx) => (
+                    <img key={idx} src={imgUrl} alt={`attachment-${idx}`} />
+                  ))}
+                </div>
+              )}
+            </div>
+            <div>
+              <img className="avator" src={profile_img} alt="" />
               <p>
                 {new Date(msg.createdAt).toLocaleTimeString([], {
                   hour: "2-digit",
