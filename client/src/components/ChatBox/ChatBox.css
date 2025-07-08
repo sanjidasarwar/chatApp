@@ -118,7 +118,7 @@
     border-style: solid;
     padding: 10px;
     border-radius: 6px;
-    color: rgb(118, 118, 118);
+    color: #fff;
 }
 .chat-input label {
     display: flex;
