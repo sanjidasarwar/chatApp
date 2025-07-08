@@ -158,7 +158,7 @@ function ChatBox() {
             setShowScrollBtn(false);
           }}
         >
-          ⬇ Scroll to bottom
+          ⬇
         </button>
       )}
     </div>
