@@ -158,7 +158,7 @@ const getMessage = async (req, res) =>{
    try {
      const messages = await Message.find({
         "conversation_id" : req.params.conversationId
-    })
+    }).sort({ createdAt: -1 })
 
     const {participant, creator} = await Conversation.findById(req.params.conversationId)
 

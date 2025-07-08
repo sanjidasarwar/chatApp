@@ -87,7 +87,9 @@ const ChatProvider = ({ children }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(data);
+      if (data.success) {
+        setMessages((preMsg) => [...preMsg, data.newMessage]);
+      }
     } catch (error) {
       console.log(error.message);
     }

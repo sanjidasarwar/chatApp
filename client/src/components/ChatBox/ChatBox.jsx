@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { arrow, avator_icon, img_attachment, profile_img } from "../../assets";
 import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
@@ -9,6 +9,9 @@ function ChatBox() {
     text: "",
     attachment: [],
   });
+  const [showScrollBtn, setShowScrollBtn] = useState(false);
+  const chatContainerRef = useRef(null);
+  const chatEndRef = useRef(null);
 
   const {
     messages,
@@ -61,6 +64,32 @@ function ChatBox() {
     });
   };
 
+  useEffect(() => {
+    const chatContainer = chatContainerRef.current;
+    const isNearBottom =
+      chatContainer.scrollHeight - chatContainer.scrollTop <=
+      chatContainer.clientHeight + 100;
+
+    if (isNearBottom) {
+      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      setShowScrollBtn(true);
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    const chatContainer = chatContainerRef.current;
+    const handleScroll = () => {
+      const isNearBottom =
+        chatContainer.scrollHeight - chatContainer.scrollTop <=
+        chatContainer.clientHeight + 100;
+      setShowScrollBtn(!isNearBottom);
+    };
+    chatContainer.addEventListener("scroll", handleScroll);
+
+    return () => chatContainer.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div className="chat-box ">
       <div className="chat-user">
@@ -69,7 +98,7 @@ function ChatBox() {
         <img className="arrow" src="" alt="" />
         <img className="help" src="help" alt="" />
       </div>
-      <div className="chat-msg">
+      <div className="chat-msg" ref={chatContainerRef}>
         {messages.map((msg) => (
           <div
             key={msg._id}
@@ -96,6 +125,7 @@ function ChatBox() {
             </div>
           </div>
         ))}
+        <div ref={chatEndRef} />
       </div>
       <form onSubmit={handleSubmit}>
         <div className="chat-input">
@@ -120,6 +150,17 @@ function ChatBox() {
           <img src={arrow} alt="" onClick={(e) => handleSubmit(e)} />
         </div>
       </form>
+      {showScrollBtn && (
+        <button
+          className="scroll-btn"
+          onClick={() => {
+            chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            setShowScrollBtn(false);
+          }}
+        >
+          ⬇ Scroll to bottom
+        </button>
+      )}
     </div>
   );
 }
