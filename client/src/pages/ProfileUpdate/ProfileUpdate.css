@@ -72,3 +72,14 @@
     margin: 20px auto;
     border-radius: 50%;
 }
+
+.profile-head{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+}
+
+.profile-head h4{
+    cursor: pointer;
+}

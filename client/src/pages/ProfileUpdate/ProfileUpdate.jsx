@@ -12,7 +12,7 @@ function ProfileUpdate() {
     password: "",
   });
   const [previewImage, setPreviewImage] = useState("");
-  const { updateUser } = useContext(AuthContext);
+  const { updateUser, navigate } = useContext(AuthContext);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -65,7 +65,10 @@ function ProfileUpdate() {
     <div className="profile">
       <div className="profile-container">
         <form onSubmit={handleSubmit}>
-          <h3>Profile details</h3>
+          <div className="profile-head">
+            <h3>Profile details</h3>
+            <h4 onClick={() => navigate("/chat")}>&larr; Back</h4>
+          </div>
           <label htmlFor="avatar">
             <input
               name="image"

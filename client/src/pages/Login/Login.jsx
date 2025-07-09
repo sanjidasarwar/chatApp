@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import { logoBig } from "../../assets";
 import { AuthContext } from "../../context/AuthContext";
 import "./Login.css";
 
@@ -52,7 +51,6 @@ function Login() {
 
   return (
     <div className="login">
-      <img className="logo" src={logoBig} alt="" />
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>{currentState}</h2>
         {currentState === "Login" ? (

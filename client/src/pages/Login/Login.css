@@ -1,12 +1,11 @@
 .login{
     min-height: 100dvh;
-    background: url('chat_bg.jpg') no-repeat;
-    background-size: cover;
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: end;
     z-index: 3;
     position: relative;
+    padding-right: 50px;
 }
 .login::after{
     content: '';
@@ -18,6 +17,10 @@
     left: 0;
     right: 0;
     z-index: -1;
+    background: url('chat_bg.jpg') no-repeat;
+    background-size: cover;
+    background-position:center;
+    transform: scaleX(-1);
 }
 
 .login .logo{
