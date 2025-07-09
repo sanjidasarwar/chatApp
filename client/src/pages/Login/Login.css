@@ -17,7 +17,7 @@
     left: 0;
     right: 0;
     z-index: -1;
-    background: url('chat_bg.jpg') no-repeat;
+    background: url('/chat_bg.jpg') no-repeat;
     background-size: cover;
     background-position:center;
     transform: scaleX(-1);
