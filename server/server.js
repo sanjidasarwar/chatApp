@@ -18,10 +18,14 @@ const server = http.createServer(app)
 
 // initialize socket io server
 export const io = new Server(server, {
-  cors:{
-  origin: 'http://localhost:5173',
-  credentials: true,
-}
+   cors: {
+    origin: [
+      "http://localhost:5173",
+      "https://chatapp-597g.onrender.com" 
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
+  }
 })
 
 //store online users
