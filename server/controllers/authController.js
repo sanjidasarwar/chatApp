@@ -60,7 +60,7 @@ try {
         success:false,
         errors: {
         common: { msg: error.message },
-      },
+            },
         })
 }
 }
@@ -72,11 +72,22 @@ const registerUser = async (req, res)=>{
         const existUser = await UserModel.findOne({email: userName})
 
         if(existUser){
-             return res.json({ success:false, message: "User already exist" });
+             return res.status(400).json({ 
+                success:false, 
+                errors:{
+                    userName: "User already exist"
+                }
+              });
         }
 
         if(!validator.isEmail(userName)){
-             return res.json({ success:false, message: "Please enter a valid email" });
+             return res.status(400).json({
+                 success:false, 
+                 errors:{
+                    userName: "Please enter a valid email" 
+                 }
+                });
+                
         }
 
         const strongPassword= validator.isStrongPassword(password, {
@@ -88,7 +99,12 @@ const registerUser = async (req, res)=>{
         })
 
         if(!strongPassword){
-            return res.json({ success:false, message: "Please enter a strong password" });
+            return res.status(400).json({ 
+                success:false,
+                errors:{
+                    password: "Please enter a strong password" 
+                }
+                });
         }
 
         // hashing password
@@ -108,7 +124,9 @@ const registerUser = async (req, res)=>{
     } catch (error) {
         res.status(500).json({
         success:false,
-        message:`Error=> ${error.message}`
+           errors: {
+            common: { msg: error.message },
+            },
         })
     }
 }

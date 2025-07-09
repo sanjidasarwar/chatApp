@@ -12,7 +12,7 @@ function Login() {
     password: "",
   });
 
-  const { login, loginErrors } = useContext(AuthContext);
+  const { login, formErrors } = useContext(AuthContext);
 
   const handleCurrentState = (state) => {
     setCurrentState(state);
@@ -88,8 +88,8 @@ function Login() {
             />
           </>
         )}
-        {loginErrors.userName && (
-          <p className="error-text">{loginErrors.userName}</p>
+        {formErrors.userName && (
+          <p className="error-text">{formErrors.userName}</p>
         )}
         <input
           className="form-input"
@@ -100,8 +100,8 @@ function Login() {
           value={formData.password}
           onChange={(e) => handleChange(e)}
         />
-        {loginErrors.password && (
-          <p className="error-text">{loginErrors.password}</p>
+        {formErrors.password && (
+          <p className="error-text">{formErrors.password}</p>
         )}
         <button type="submit">
           {currentState === "Sign Up" ? "Create account" : "Login"}
