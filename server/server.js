@@ -49,10 +49,26 @@ io.on('connection', (socket)=>{
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// app.use(cors({
+//   origin: 'http://localhost:5173',
+//   credentials: true,
+// }))
+
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://chatapp-597g.onrender.com' 
+];
+
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
-}))
+}));
 
 // api endpoint
 app.use('/api/auth', authRoute)
