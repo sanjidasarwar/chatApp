@@ -1,9 +1,6 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { avator_icon } from "../../assets";
-// import upload from "../../lib/upload";
-import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import "./ProfileUpdate.css";
 
@@ -15,7 +12,6 @@ function ProfileUpdate() {
     password: "",
   });
   const [previewImage, setPreviewImage] = useState("");
-  const navigate = useNavigate();
   const { updateUser } = useContext(AuthContext);
 
   const handleChange = (e) => {

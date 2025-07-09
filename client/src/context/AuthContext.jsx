@@ -12,6 +12,7 @@ const AuthProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState(null);
   const [socket, setSocket] = useState(null);
+  const [loginErrors, setLoginErrors] = useState({});
   const navigate = useNavigate();
 
   // check the user is authenticated or not. if so set the user data and connect the socket
@@ -51,7 +52,6 @@ const AuthProvider = ({ children }) => {
   const login = async (state, credentials, handleCurrentState) => {
     try {
       const response = await axiosInstance.post(`/auth/${state}`, credentials);
-
       if (response.data.success) {
         if (state === "register") {
           toast.success(response.data.message);
@@ -65,10 +65,14 @@ const AuthProvider = ({ children }) => {
         toast.success(response.data.message);
         navigate("/chat");
       } else {
-        toast.error(response.message);
+        toast.error("Login failed");
       }
     } catch (error) {
-      toast.error(error.message);
+      if (error.response?.data?.errors) {
+        setLoginErrors(error.response.data.errors);
+      } else {
+        toast.error(error.message);
+      }
     }
   };
 
@@ -98,7 +102,6 @@ const AuthProvider = ({ children }) => {
           },
         }
       );
-      console.log(data);
 
       if (data.success) {
         setAuthUser(data.user);
@@ -134,6 +137,7 @@ const AuthProvider = ({ children }) => {
     logout,
     updateUser,
     navigate,
+    loginErrors,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

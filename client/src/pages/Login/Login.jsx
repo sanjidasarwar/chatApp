@@ -12,7 +12,7 @@ function Login() {
     password: "",
   });
 
-  const { login } = useContext(AuthContext);
+  const { login, loginErrors } = useContext(AuthContext);
 
   const handleCurrentState = (state) => {
     setCurrentState(state);
@@ -88,6 +88,9 @@ function Login() {
             />
           </>
         )}
+        {loginErrors.userName && (
+          <p className="error-text">{loginErrors.userName}</p>
+        )}
         <input
           className="form-input"
           type="text"
@@ -97,10 +100,12 @@ function Login() {
           value={formData.password}
           onChange={(e) => handleChange(e)}
         />
+        {loginErrors.password && (
+          <p className="error-text">{loginErrors.password}</p>
+        )}
         <button type="submit">
           {currentState === "Sign Up" ? "Create account" : "Login"}
         </button>
-        profile
         <div className="login-term">
           <input type="checkbox" />
           <p>Agree to the terms of use &amp; privacy policy.</p>
