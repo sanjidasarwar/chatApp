@@ -1,10 +1,12 @@
 import { useContext, useState } from "react";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
 import "./Login.css";
 
 function Login() {
   const [currentState, setCurrentState] = useState("Login");
   const [isDataSubmitted, setIsDataSubmitted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     userName: "",
@@ -89,18 +91,24 @@ function Login() {
         {formErrors.userName && (
           <p className="error-text">{formErrors.userName}</p>
         )}
-        <input
-          className="form-input"
-          type="text"
-          placeholder="password"
-          required=""
-          name="password"
-          value={formData.password}
-          onChange={(e) => handleChange(e)}
-        />
+        <div className="password-field">
+          <input
+            className="form-input"
+            type={showPassword ? "text" : "password"}
+            placeholder="password"
+            required=""
+            name="password"
+            value={formData.password}
+            onChange={(e) => handleChange(e)}
+          />
+          <span onClick={() => setShowPassword(!showPassword)}>
+            {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+          </span>
+        </div>
         {formErrors.password && (
           <p className="error-text">{formErrors.password}</p>
         )}
+
         <button type="submit">
           {currentState === "Sign Up" ? "Create account" : "Login"}
         </button>
