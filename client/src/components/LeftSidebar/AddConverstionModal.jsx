@@ -68,6 +68,7 @@ function AddConverstionModal({ setIsOpen }) {
                     key={user._id}
                     onClick={() => {
                       addConversation(user._id);
+                      handleClose();
                     }}
                   >
                     <img
