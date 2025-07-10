@@ -8,7 +8,7 @@ import AddConverstionModal from "./AddConverstionModal";
 
 import "./LeftSidebar.css";
 
-function LeftSidebar() {
+function LeftSidebar({ setShowChatBox }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState("");
   const { logout, onlineUsers } = useContext(AuthContext);
@@ -30,6 +30,10 @@ function LeftSidebar() {
     });
 
     await axiosInstance.put(`/user/seen_messages/${conversationId}`);
+
+    if (window.innerWidth <= 768 && setShowChatBox) {
+      setShowChatBox(true);
+    }
   };
 
   return (

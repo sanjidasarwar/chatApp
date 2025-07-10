@@ -4,7 +4,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
 import "./ChatBox.css";
 
-function ChatBox() {
+function ChatBox({ setShowChatBox }) {
   const [input, setInput] = useState({
     text: "",
     attachment: [],
@@ -93,6 +93,21 @@ function ChatBox() {
   return (
     <div className="chat-box ">
       <div className="chat-user">
+        {window.innerWidth <= 768 && (
+          <button
+            onClick={() => setShowChatBox(false)}
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "white",
+              fontSize: "18px",
+              marginRight: "10px",
+              cursor: "pointer",
+            }}
+          >
+            ←
+          </button>
+        )}
         <img src={otherUser?.avatar ? otherUser.avatar : avator_icon} alt="" />
         <p>{otherUser?.name} </p>
         <img className="arrow" src="" alt="" />
