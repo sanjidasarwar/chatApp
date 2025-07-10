@@ -83,3 +83,42 @@
 .profile-head h4{
     cursor: pointer;
 }
+
+@media screen and (max-width: 768px) {
+  .profile-container {
+    flex-direction: column;
+    min-width: auto;
+    width: 90%;
+    padding: 20px;
+  }
+
+  .profile form {
+    padding: 20px;
+    width: 100%;
+    align-items: center;
+  }
+
+  .profile input,
+  .profile textarea {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .profile-pic {
+    margin: 0 auto 20px auto;
+    max-width: 100px;
+  }
+
+  .profile label {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .profile-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
