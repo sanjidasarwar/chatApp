@@ -48,21 +48,6 @@ const ChatProvider = ({ children }) => {
     }
   };
 
-  const deleteConversation = async (conversationId) => {
-    try {
-      const { data } = await axiosInstance.delete(
-        `/user/delete_user/${conversationId}`
-      );
-
-      if (data.success) {
-        await allConnectedUsers();
-        toast.success(data.message);
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
   const allConnectedUsers = async () => {
     try {
       const { data } = await axiosInstance.get("user/get_users");
@@ -167,7 +152,6 @@ const ChatProvider = ({ children }) => {
     selectedConversationId,
     unseenMessages,
     setUnseenMessages,
-    deleteConversation,
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

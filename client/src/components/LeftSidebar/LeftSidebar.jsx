@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import { FaTrashAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { avator_icon, logo, three_dot } from "../../assets";
@@ -114,13 +113,13 @@ function LeftSidebar({ setShowChatBox }) {
                 </div>
               </div>
 
-              <span
+              {/* <span
                 className="delete"
                 onClick={(e) => handleDelete(e, conversationId)}
                 title="Delete conversation"
               >
                 <FaTrashAlt />
-              </span>
+              </span> */}
             </div>
           ))}
         </div>

@@ -51,25 +51,7 @@ const addConversation =async (req, res) =>{
    }
 
 }
-const deleteConversation =async (req, res) =>{
-   try {
-    const selectedConversation = req.params.conversationId     
 
-    await Conversation.findByIdAndDelete(selectedConversation);   
-    await Message.deleteMany({ conversation_id: selectedConversation });
-    
-    res.status(200).json({
-      success:true,
-      message: "Conversation deleted successfully!",
-    });
-   } catch (error) {
-     res.json({
-      success:false,
-      message: error.message,
-    });
-   }
-
-}
 
 const getUsersForSidebar = async (req, res) =>{
     try {
@@ -242,6 +224,6 @@ const searchUsers = async(req, res) =>{
 }
 
 export {
-    addConversation, deleteConversation, getMessage, getUsersForSidebar, markMessageAsSeen, searchUsers, sendMessage
+    addConversation, getMessage, getUsersForSidebar, markMessageAsSeen, searchUsers, sendMessage
 };
 
