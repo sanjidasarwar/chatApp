@@ -2,6 +2,11 @@
     background: transparent;
     color: #fff;
     height: 75vh;
+     background: #1f1f2e;
+
+}
+.ls::-webkit-scrollbar {
+  display: none;       
 }
 .ls-top, .ls-bottom {
     padding: 20px;
@@ -142,4 +147,24 @@
   line-height: 1;
   min-width: 18px;
   text-align: center;
+}
+
+.delete{
+  background: none;
+  border: none;
+  color: #e74c3c;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 5px;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: none;
+}
+
+.friends:hover .delete, .friends.active .delete{
+    display: block;
+    color: #ef4444;
 }

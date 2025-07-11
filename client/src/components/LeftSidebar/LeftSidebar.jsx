@@ -1,5 +1,7 @@
 import { useContext, useState } from "react";
+import { FaTrashAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import { avator_icon, logo, three_dot } from "../../assets";
 import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
@@ -17,6 +19,7 @@ function LeftSidebar({ setShowChatBox }) {
     getMessages,
     unseenMessages,
     setUnseenMessages,
+    deleteConversation,
   } = useContext(ChatContext);
   const navigate = useNavigate();
 
@@ -36,6 +39,23 @@ function LeftSidebar({ setShowChatBox }) {
     }
   };
 
+  const handleDelete = (e, conversationId) => {
+    e.stopPropagation();
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#e74c3c",
+      cancelButtonColor: "#999",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteConversation(conversationId);
+      }
+    });
+  };
   return (
     <>
       <div className="ls hidden">
@@ -83,11 +103,24 @@ function LeftSidebar({ setShowChatBox }) {
                     }`}
                   />
                 </div>
-                <p className="text-white">{otherUser.name}</p>
+                <div>
+                  <p className="text-white">{otherUser.name}</p>
+
+                  {unseenMessages[otherUser.id] && (
+                    <p className="unseen-count">
+                      {unseenMessages[otherUser.id]}
+                    </p>
+                  )}
+                </div>
               </div>
-              {unseenMessages[otherUser.id] && (
-                <p className="unseen-count">{unseenMessages[otherUser.id]}</p>
-              )}
+
+              <span
+                className="delete"
+                onClick={(e) => handleDelete(e, conversationId)}
+                title="Delete conversation"
+              >
+                <FaTrashAlt />
+              </span>
             </div>
           ))}
         </div>
