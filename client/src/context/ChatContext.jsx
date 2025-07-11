@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { axiosInstance } from "../lib/axios";
 import { AuthContext } from "./AuthContext";
 
@@ -38,6 +39,10 @@ const ChatProvider = ({ children }) => {
       const { data } = await axiosInstance.post("/user/add_new_user", {
         id: userId,
       });
+      if (data.success) {
+        await allConnectedUsers();
+        toast.success(data.message);
+      }
     } catch (error) {
       console.log(error.message);
     }

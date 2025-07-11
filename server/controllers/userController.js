@@ -36,13 +36,12 @@ const addConversation =async (req, res) =>{
         }
     })
 
-    const recentlyAddedConversation = await newConversation.save();
+    await newConversation.save();
     
     
     res.status(200).json({
       success:true,
-      message: "Conversation was added successfully!",
-      conversationId:recentlyAddedConversation._id
+      message: "Conversation added successfully!",
     });
    } catch (error) {
      res.json({

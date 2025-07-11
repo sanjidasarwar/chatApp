@@ -66,9 +66,10 @@ function AddConverstionModal({ setIsOpen }) {
                 {users.map((user) => (
                   <li
                     key={user._id}
-                    onClick={() => {
-                      addConversation(user._id);
-                      handleClose();
+                    onClick={async () => {
+                      await addConversation(user._id);
+                      setSearchInput("");
+                      setIsOpen(false);
                     }}
                   >
                     <img
