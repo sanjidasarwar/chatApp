@@ -270,10 +270,10 @@ const checkAuth = async(req, res)=>{
         res.status(200).json({
             success:true,
             user:  {
-                id: req.user._id,
-                name: req.user.name,
-                email: req.user.email,
-                profileImage: req.user.profileImage || '',
+                id: req?.user?._id,
+                name: req?.user?.name,
+                email: req?.user?.email,
+                profileImage: req?.user?.profileImage || '',
             }
         })
     } catch (error) {
