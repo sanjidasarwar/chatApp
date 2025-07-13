@@ -139,6 +139,7 @@ const AuthProvider = ({ children }) => {
     updateUser,
     navigate,
     formErrors,
+    setFormErrors,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

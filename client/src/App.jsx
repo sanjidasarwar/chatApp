@@ -8,7 +8,7 @@ import ProfileUpdate from "./pages/ProfileUpdate/ProfileUpdate";
 function App() {
   return (
     <>
-      <ToastContainer />
+      <ToastContainer autoClose={1000} />
       <Routes>
         <Route index element={<Login />} />
         <Route path="/chat" element={<Chat />} />

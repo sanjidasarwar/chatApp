@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
 import "./Login.css";
@@ -13,7 +13,7 @@ function Login() {
     password: "",
   });
 
-  const { login, formErrors } = useContext(AuthContext);
+  const { login, formErrors, setFormErrors } = useContext(AuthContext);
 
   const handleCurrentState = (state) => {
     setCurrentState(state);
@@ -27,6 +27,7 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     if (currentState === "Sign up" && !isDataSubmitted) {
       setIsDataSubmitted(true);
       return;
@@ -50,6 +51,15 @@ function Login() {
       handleCurrentState
     );
   };
+
+  useEffect(() => {
+    setFormData({
+      name: "",
+      userName: "",
+      password: "",
+    });
+    setFormErrors({});
+  }, [currentState]);
 
   return (
     <div className="login">

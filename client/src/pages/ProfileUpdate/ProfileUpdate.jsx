@@ -35,6 +35,7 @@ function ProfileUpdate() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    e.stopPropagation();
 
     try {
       if (!previewImage && !data.image) {

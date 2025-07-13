@@ -66,7 +66,8 @@ function AddConverstionModal({ setIsOpen }) {
                 {users.map((user) => (
                   <li
                     key={user._id}
-                    onClick={async () => {
+                    onClick={async (e) => {
+                      e.stopPropagation();
                       await addConversation(user._id);
                       setSearchInput("");
                       setIsOpen(false);
