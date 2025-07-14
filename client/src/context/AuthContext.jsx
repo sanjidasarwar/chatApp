@@ -38,6 +38,7 @@ const AuthProvider = ({ children }) => {
       query: {
         userId: userData.id,
       },
+      transports: ["websocket"],
     });
 
     newSocket.connect();
