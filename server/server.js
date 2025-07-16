@@ -18,14 +18,7 @@ const server = http.createServer(app)
 
 // initialize socket io server
 export const io = new Server(server, {
-   cors: {
-    origin: [
-      "http://localhost:5173",
-      "https://chatapp-597g.onrender.com" 
-    ],
-    methods: ["GET", "POST"],
-    credentials: true
-  }
+   cors: {origin:"*"},
 })
 
 //store online users
@@ -53,26 +46,27 @@ io.on('connection', (socket)=>{
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(cors({
-//   origin: 'http://localhost:5173',
-//   credentials: true,
-// }))
-
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://chatapp-597g.onrender.com' 
-];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: process.env.FRONTEND_URI,
   credentials: true,
-}));
+  transports: ['websocket'],
+}))
+
+// const allowedOrigins = [
+//   'http://localhost:5173',
+//   'https://chatapp-597g.onrender.com' 
+// ];
+
+// app.use(cors({
+//   origin: function (origin, callback) {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+//   credentials: true,
+// }));
 
 // api endpoint
 app.use('/api/auth', authRoute)

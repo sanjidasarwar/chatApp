@@ -11,6 +11,7 @@ const ChatProvider = ({ children }) => {
   const [selectedConversations, setSelectedConversations] = useState([]);
   const [messages, setMessages] = useState([]);
   const [unseenMessages, setUnseenMessages] = useState([]);
+  console.log(messages);
 
   // const messages = selectedConversations?.messages || [];
   const participant = selectedConversations?.participant || null;
@@ -103,15 +104,23 @@ const ChatProvider = ({ children }) => {
   const subscribeToMessages = async () => {
     if (!socket) return;
 
-    socket.on("newMessage", (newMessage) => {
-      if (participant && participant.id === newMessage.sender.id) {
+    socket.on("newMessage", async (newMessage) => {
+      if (
+        selectedConversationId &&
+        selectedConversationId === newMessage.conversation_id
+      ) {
         newMessage.seen = true;
-        setMessages((preMsg) => [...preMsg, newMessage]);
+        setMessages((preMsg) => {
+          return [...preMsg, newMessage];
+        });
 
-        axiosInstance.put(`user/seen_messages/${newMessage._id}`);
+        const data = await axiosInstance.put(
+          `user/seen_messages/${newMessage.conversation_id}`
+        );
+        console.log(data);
       } else {
         setUnseenMessages((preUnseenMessages) => ({
-          preUnseenMessages,
+          ...preUnseenMessages,
           [newMessage.sender.id]: preUnseenMessages[newMessage.sender.id]
             ? preUnseenMessages[newMessage.sender.id] + 1
             : 1,
